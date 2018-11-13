@@ -7,6 +7,7 @@ import android.widget.ListView;
 import com.example.liuwen.two.Bean.Book;
 import com.example.liuwen.two.engine.Downloader;
 import com.example.liuwen.two.listener.EventListener;
+import com.example.liuwen.two.utils.PromptDialogUtils;
 
 import java.io.File;
 import java.util.List;
@@ -22,7 +23,10 @@ public class AppInfo extends Application implements EventListener {
     private Book selectedBook = null;
     private Downloader downloader;
 
-
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
 
     @Override
     public void onChooseBook(List<Book> books) {

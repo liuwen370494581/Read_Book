@@ -42,7 +42,7 @@ public class MianHuaTang extends ChapterSite {
             String lastChapterName = spans.get(2).getElementsByTag("a").first().text();
             String author = spans.get(3).text();
             String lastUpdateTime = spans.get(4).text();
-            bookList.add(new Book(bkName, author, bkUrl, "未知", lastUpdateTime, lastChapterName, this));
+            bookList.add(new Book(bkName, author, bkUrl, "未知", lastUpdateTime, lastChapterName, this,getSiteName()));
         }
         return bookList;
     }

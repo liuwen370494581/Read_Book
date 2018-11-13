@@ -10,6 +10,7 @@ import java.util.List;
  * desc   :
  */
 public class Chapter implements Serializable {
+    private Long id;
     private String chapterName;//章节名字
     private int index;//章节在小说中的顺序，最后排序需要用到
     private List<String> contents;//章节内容 按行分
@@ -19,6 +20,9 @@ public class Chapter implements Serializable {
         this.index = index;
         this.contents = contents;
     }
+
+
+
 
     @Override
     public String toString() {

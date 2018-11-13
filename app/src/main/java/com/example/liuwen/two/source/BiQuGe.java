@@ -41,7 +41,7 @@ public class BiQuGe extends ChapterSite {
             String author = new RegexUtil.Tag(ps.get(0)).getText().replaceAll("作者|：", "");
             String lastChapterName = RegexUtil.regexExcept("\">", "</a>", ps.get(3)).get(0);
             String lastUpdateTime = new RegexUtil.Tag(ps.get(2)).getText();
-            Book book = new Book(bookName, author, url, "未知", lastUpdateTime, lastChapterName, this);
+            Book book = new Book(bookName, author, url, "未知", lastUpdateTime, lastChapterName, this,getSiteName());
             return Collections.singletonList(book);
         } else {
             List<String> trs = RegexUtil.regexExcept("<tr", "</tr>", html);
@@ -60,7 +60,7 @@ public class BiQuGe extends ChapterSite {
                 String author = new RegexUtil.Tag(tds.get(2)).getText();
                 String size = new RegexUtil.Tag(tds.get(3)).getText();
                 String lastUpdateTime = new RegexUtil.Tag(tds.get(4)).getText();
-                Book book = new Book(bkName, author, bkUrl, size, lastUpdateTime, lastChapterName, this);
+                Book book = new Book(bkName, author, bkUrl, size, lastUpdateTime, lastChapterName, this,getSiteName());
                 bookList.add(book);
             }
             return bookList;

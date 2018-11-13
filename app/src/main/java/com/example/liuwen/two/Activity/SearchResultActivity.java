@@ -2,10 +2,13 @@ package com.example.liuwen.two.Activity;
 
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.example.liuwen.two.Action.MyReadHandler;
 import com.example.liuwen.two.Adapter.SearchResultAdapter;
@@ -17,6 +20,8 @@ import com.example.liuwen.two.View.promptlibrary.PromptDialog;
 import com.example.liuwen.two.engine.Downloader;
 import com.example.liuwen.two.listener.EventListener;
 import com.example.liuwen.two.listener.OnHandlerListener;
+import com.example.liuwen.two.utils.PromptDialogUtils;
+import com.example.liuwen.two.utils.SneakerUtils;
 import com.example.liuwen.two.utils.ToastUtils;
 import com.irozon.sneaker.Sneaker;
 import com.liaoinstan.springview.widget.SpringView;
@@ -25,6 +30,8 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.bingoogolapple.androidcommon.adapter.BGAOnRVItemClickListener;
 
 /**
  * author : liuwen
@@ -41,7 +48,6 @@ public class SearchResultActivity extends BaseActivity implements EventListener 
     private SpringView mSpringView;
     private SearchResultAdapter mAdapter;
     private Downloader mDownLoader;
-    private PromptDialog promptDialog;
     private MyReadHandler myReadHandler = new MyReadHandler(this, new OnHandlerListener() {
         @Override
         public void handlerMessage(Message message, WeakReference<Context> reference) {
@@ -49,23 +55,28 @@ public class SearchResultActivity extends BaseActivity implements EventListener 
             if (activity != null) {
                 switch (message.what) {
                     case 0:
-                        activity.promptDialog.dismiss();
+                        PromptDialogUtils.getInstance().hidePromptDialog();
                         //获取成功
                         mSearchBooks = (List<Book>) message.obj;
-                        ToastUtils.showCenterToast(getActivityContext(), mSearchBooks.toString());
+                        if (mSearchBooks != null) {
+                            activity.mAdapter.setData(mSearchBooks);
+                        }
                         break;
                     case 1:
                         String msg = (String) message.obj;
-                        Sneaker.with(activity)
-                                .setTitle("正在查找书源中")
-                                .setMessage(msg != null ? msg : "返回信息有误")
-                                .sneakSuccess();
+                        if (msg != null) {
+                            SneakerUtils.setCommonMessage(activity, "正在搜索书籍来源", msg);
+                        }
                         break;
                     case 2:
                         break;
                     case 3:
                         break;
                     case 4:
+                        String errMsg= (String) message.obj;
+                        if(errMsg!=null){
+                            SneakerUtils.setOtherMessage(activity,"错误信息反馈",errMsg,R.color.red,R.drawable.ic_error);
+                        }
                         break;
                     default:
                         break;
@@ -86,8 +97,6 @@ public class SearchResultActivity extends BaseActivity implements EventListener 
         bookName = getIntent().getStringExtra("text");
         mRecyclerView = findViewById(R.id.recycler_tv);
         mSpringView = findViewById(R.id.id_spring_view);
-        promptDialog = new PromptDialog(this);
-        promptDialog.getDefaultBuilder().touchAble(true).round(3).withAnim(true);
         mDownLoader = new Downloader(this);
     }
 
@@ -104,7 +113,7 @@ public class SearchResultActivity extends BaseActivity implements EventListener 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void searchBookForName() {
         mAdapter.setTitle(bookName);
-        promptDialog.showLoading("正在搜索中");
+        PromptDialogUtils.getInstance().showPromptDialog("正在搜索中");
         new Thread(() -> {
             mDownLoader.search(bookName);
         }).start();
@@ -112,7 +121,11 @@ public class SearchResultActivity extends BaseActivity implements EventListener 
 
     @Override
     protected void setListener() {
-
+        mAdapter.setOnRVItemClickListener((parent, itemView, position) -> {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("bookInfo", mAdapter.getItem(position));
+            openActivity(BookInfoActivity.class, bundle);
+        });
     }
 
     @Override

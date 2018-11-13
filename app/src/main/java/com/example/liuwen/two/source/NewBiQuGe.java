@@ -54,7 +54,7 @@ public class NewBiQuGe extends ChapterSite {
             String author = tags.get(0).getElementsByTag("span").get(1).text();
             String lastUpdateTime = tags.get(2).getElementsByTag("span").get(1).text();
             String lastChapterName = tags.get(3).getElementsByTag("a").text();
-            bookList.add(new Book(bkName, author, url, "未知", lastUpdateTime, lastChapterName, this));
+            bookList.add(new Book(bkName, author, url, "未知", lastUpdateTime, lastChapterName, this,getSiteName()));
         }
         return bookList;
     }

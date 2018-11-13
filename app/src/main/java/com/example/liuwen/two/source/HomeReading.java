@@ -79,7 +79,7 @@ public class HomeReading extends ChapterSite {
             String lastChapterName = divs.get(i + 1).text();
             String lastUpdateTime = divs.get(i + 2).getElementsByTag("span").first().text();
             String bkUrl = root + divs.get(i + 2).getElementsByTag("a").first().attr("href");
-            bookList.add(new Book(bkName, author, bkUrl, "未知", lastUpdateTime, lastChapterName, this));
+            bookList.add(new Book(bkName, author, bkUrl, "未知", lastUpdateTime, lastChapterName, this,getSiteName()));
         }
         return bookList;
     }

@@ -19,6 +19,7 @@ import com.example.liuwen.two.View.promptlibrary.PromptDialog;
 import com.example.liuwen.two.listener.OnCommonBarListener;
 import com.example.liuwen.two.listener.onRightListener;
 import com.example.liuwen.two.utils.ActivityKiller;
+import com.example.liuwen.two.utils.PromptDialogUtils;
 
 
 /**
@@ -34,9 +35,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private TextView mTvCenter, mTvRight;//toobar中间文字
     private AppInfo mApp;
     private Context mActivityContext, mAppContext;//尽量地采用 Application Context 避免内存泄漏
-    private PromptDialog promptDialog;
     private TipDialog mTipDialog;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,13 +48,11 @@ public abstract class BaseActivity extends AppCompatActivity {
                 return;
             }
         }
+        PromptDialogUtils.getInstance().init(this);
         setContentView(setLayoutRes());
         initView();//初始化视图
         initData();
         setListener();
-        promptDialog = new PromptDialog(this);
-        //设置自定义属性
-        promptDialog.getDefaultBuilder().touchAble(true).round(3).withAnim(true);
         mActivityContext = this;
         mAppContext = getApplicationContext();
         if (this.getClass().isAnnotationPresent(BindEventBus.class)) {
@@ -132,14 +129,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (this.getClass().isAnnotationPresent(BindEventBus.class)) {
             EventBusUtil.unregister(this);
         }
-    }
-
-    public void showLoadingDialog(String loadingText) {
-        promptDialog.showLoading(loadingText);
-    }
-
-    public void hideLoadingDialog() {
-        promptDialog.dismiss();
     }
 
     public void showTipDialog(TipDialog.ITipDialogListener mListener) {

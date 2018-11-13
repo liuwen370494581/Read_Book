@@ -11,6 +11,7 @@ import java.io.Serializable;
  * desc   :
  */
 public class Book implements Serializable {
+    private Long id;
     private String bookName;
     private String author = "未知";
     private String url;
@@ -18,8 +19,10 @@ public class Book implements Serializable {
     private String lastUpdateTime = "未知";
     private String lastChapterName = "未知";
     private ISite site;
+    private String  source;
 
-    public Book(String bookName, String author, String url, String chapterSize, String lastUpdateTime, String lastChapterName, ISite site) {
+
+    public Book(String bookName, String author, String url, String chapterSize, String lastUpdateTime, String lastChapterName, ISite site, String source) {
         this.bookName = bookName;
         this.author = author;
         this.url = url;
@@ -27,6 +30,7 @@ public class Book implements Serializable {
         this.lastUpdateTime = lastUpdateTime;
         this.lastChapterName = lastChapterName;
         this.site = site;
+        this.source = source;
     }
 
     public ISite getSite() {
@@ -48,6 +52,15 @@ public class Book implements Serializable {
                 ", lastChapterName='" + lastChapterName + '\'' +
                 ", site=" + site +
                 '}';
+    }
+
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public String getBookName() {

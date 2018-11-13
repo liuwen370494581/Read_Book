@@ -23,6 +23,7 @@
 
         <activity android:name=".Activity.SourceSettingActivity" />
         <activity android:name=".Activity.SearchResultActivity"/>
+        <activity android:name=".Activity.BookInfoActivity"/>
     </application>
 
 </manifest>

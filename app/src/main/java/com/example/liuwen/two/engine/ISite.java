@@ -4,6 +4,7 @@ import com.example.liuwen.two.Bean.Book;
 import com.example.liuwen.two.listener.EventListener;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ import java.util.List;
  * time   : 2018/11/08 11:34
  * desc   :
  */
-public interface ISite {
+public interface ISite extends Serializable {
 
     public List<Book> search(String bookName) throws Exception;
 

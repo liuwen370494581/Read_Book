@@ -24,4 +24,15 @@ public class SneakerUtils {
                 .setIcon(R.drawable.ic_success, R.color.white, false) // Icon, icon tint color and circular icon view
                 .sneak(R.color.main_text_color_focus); // Sneak with background color
     }
+
+    public static void setOtherMessage(Activity activity, String title, String message, int color, int icon) {
+        Sneaker.with(activity)
+                .setTitle(title, R.color.white) // Title and title color
+                .setMessage(message, R.color.white) // Message and message color
+                .setDuration(4000) // Time duration to show
+                .autoHide(true) // Auto hide Sneaker view
+                .setHeight(ViewGroup.LayoutParams.WRAP_CONTENT) // Height of the Sneaker layout
+                .setIcon(icon, R.color.white, false) // Icon, icon tint color and circular icon view
+                .sneak(color); // Sneak with background color
+    }
 }

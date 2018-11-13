@@ -39,11 +39,14 @@ public class SearchResultAdapter extends BGARecyclerViewAdapter<Book> {
         CornerImageView imageView = (CornerImageView) helper.getImageView(R.id.iv_search_item_cover);
         TextView tvTitle = helper.getTextView(R.id.tv_search_item_title);
         TextView tvAuthor = helper.getTextView(R.id.tv_search_item_author);
-        TextView tvDesc = helper.getTextView(R.id.tv_search_item_desc);
-
+        TextView tvUpdateContent = helper.getTextView(R.id.tv_search_item_update_content);
+        TextView tvUpdateTime = helper.getTextView(R.id.tv_search_item_update_time);
+        TextView tvSource = helper.getTextView(R.id.tv_search_item_source);
         tvTitle.setText(changeTxtColor(model.getBookName(), title, 0xFFF08080));
         tvAuthor.setText(changeTxtColor(model.getAuthor(), title, 0xFFF08080));
-        //tvDesc.setText(changeTxtColor(model.getDesc(), title, 0xFFF08080));
+        tvSource.setText("来源：" + model.getSource());
+        tvUpdateContent.setText("最新章节：" + model.getLastChapterName());
+        tvUpdateTime.setText("最新更新时间：" + model.getLastUpdateTime());
         GlideUtils.loadImage(imageView, model.getUrl(), R.mipmap.ic_default_cover, R.mipmap.ic_default_cover);
     }
 

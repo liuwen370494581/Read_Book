@@ -49,7 +49,7 @@ public class JiDian extends ChapterSite {
             String author = tds.get(2).text();
             String size = tds.get(3).text();
             String lastUpdateTime = tds.get(4).text();
-            bookList.add(new Book(bkName, author, bkUrl, size, lastUpdateTime, lastChapterName, this));
+            bookList.add(new Book(bkName, author, bkUrl, size, lastUpdateTime, lastChapterName, this,getSiteName()));
         }
         return bookList;
     }

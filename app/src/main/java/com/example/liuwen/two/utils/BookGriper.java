@@ -51,7 +51,7 @@ public class BookGriper {
             String lastUpdateTime = spans.get(5).text();
             String lastChapterName = detail.getElementsByClass("result-game-item-info-tag-item")
                     .get(0).text();
-            Book book = new Book(bkName, author, bkUrl, "未知", lastUpdateTime, lastChapterName, site);
+            Book book = new Book(bkName, author, bkUrl, "未知", lastUpdateTime, lastChapterName, site,"百度站内搜索");
             bookList.add(book);
         }
 

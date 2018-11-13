@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.example.liuwen.two.EventBus.BindEventBus;
 import com.example.liuwen.two.EventBus.EventBusUtil;
+import com.example.liuwen.two.utils.PromptDialogUtils;
 
 import java.lang.ref.WeakReference;
 
@@ -30,6 +31,7 @@ public abstract class BaseFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mActivity = (Activity) context;
+        PromptDialogUtils.getInstance().init(mActivity);
     }
 
     @Override

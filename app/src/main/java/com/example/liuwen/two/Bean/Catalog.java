@@ -1,6 +1,10 @@
 package com.example.liuwen.two.Bean;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+
 import java.io.Serializable;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * author : liuwen
@@ -8,7 +12,10 @@ import java.io.Serializable;
  * time   : 2018/11/08 11:36
  * desc   :
  */
+@Entity
 public class Catalog implements Serializable {
+    @Id(autoincrement = true)
+    private Long id;
     private String chapterName;
     private String url;
     private int index;
@@ -18,7 +25,16 @@ public class Catalog implements Serializable {
         this.url = url;
     }
 
-    public Catalog(){ }
+    public Catalog() {
+    }
+
+    @Generated(hash = 2110256265)
+    public Catalog(Long id, String chapterName, String url, int index) {
+        this.id = id;
+        this.chapterName = chapterName;
+        this.url = url;
+        this.index = index;
+    }
 
     @Override
     public String toString() {
@@ -51,5 +67,13 @@ public class Catalog implements Serializable {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

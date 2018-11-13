@@ -71,7 +71,7 @@ public class BinHuo extends ChapterSite {
             String author = tr.getElementsByTag("td").get(3).text();
             String size = tr.getElementsByTag("td").get(4).text();
             String lastUpdateTime = tr.getElementsByTag("td").get(5).text();
-            bookList.add(new Book(bkName, author, href, size, lastUpdateTime, lastChapterName, this));
+            bookList.add(new Book(bkName, author, href, size, lastUpdateTime, lastChapterName, this,getSiteName()));
         }
         return bookList;
     }

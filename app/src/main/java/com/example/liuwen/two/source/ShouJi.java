@@ -55,7 +55,7 @@ public class ShouJi  extends ChapterSite {
             String bkName = li.getElementsByTag("a").first().text();
             List<TextNode> textNodes = li.getElementsByClass("info").first().textNodes();
             String lastUpdateTime = textNodes.get(textNodes.size() - 1).text();
-            bookList.add(new Book(bkName, "未知", stringBuilder.toString(), "未知", lastUpdateTime, "未知", this));
+            bookList.add(new Book(bkName, "未知", stringBuilder.toString(), "未知", lastUpdateTime, "未知", this,getSiteName()));
         }
         return bookList;
     }

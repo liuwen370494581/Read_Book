@@ -67,7 +67,7 @@ public class DaoCaoRen extends ChapterSite {
             String bkUrl = root + tr.getElementsByTag("a").first().attr("href");
             String bkName = tr.getElementsByTag("a").first().text();
             String author = tr.getElementsByTag("td").get(1).text();
-            bookList.add(new Book(bkName, author, bkUrl, "未知", "未知", "未知", this));
+            bookList.add(new Book(bkName, author, bkUrl, "未知", "未知", "未知", this,getSiteName()));
         }
         return bookList;
     }
