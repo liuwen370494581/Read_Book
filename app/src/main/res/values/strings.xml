@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Two</string>
+
+    <string name="on_loading">正在加载中</string>
+    <string name="book_is_not_empty">书籍名或者作者名不能为空</string>
+    <string name="loading_fail">获取失败</string>
+    <string name="loading_again">在试一次</string>
+    <string name="cancel">取消</string>
+
+    <string-array name="tabs">
+        <item>首页</item>
+        <item>搜索</item>
+        <item>发现</item>
+        <item>个人</item>
+    </string-array>
+</resources>

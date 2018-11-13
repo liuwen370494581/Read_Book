@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="45dp"
+    android:background="@drawable/bg_white">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:background="@drawable/shape_search_bar"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/et_search_bar_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:drawableLeft="@mipmap/search"
+            android:drawablePadding="10dp"
+            android:hint="请输入搜索内容"
+            android:imeOptions="actionSearch"
+            android:maxLines="1"
+            android:paddingBottom="6dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="6dp"
+            android:singleLine="true"
+            android:textSize="12dp" />
+
+        <ImageView
+            android:id="@+id/iv_search_bar_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:paddingRight="6dp"
+            android:src="@mipmap/ic_search_delete" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_search_bar_source"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingLeft="6dp"
+        android:src="@mipmap/ic_search_source_setting" />
+
+    <TextView
+        android:id="@+id/tv_search_bar_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="6dp"
+        android:text="搜索"
+        android:textColor="@color/text_color_33"
+        android:textSize="14sp" />
+</LinearLayout>
+
