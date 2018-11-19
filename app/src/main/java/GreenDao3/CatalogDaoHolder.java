@@ -3,6 +3,8 @@ package GreenDao3;
 import com.example.liuwen.two.Bean.Catalog;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -30,8 +32,9 @@ public class CatalogDaoHolder {
     }
 
     public static List<Catalog> query() {
-        List<Catalog> list = new ArrayList<>();
+        List<Catalog> list;
         list = DaoManager.getInstance().getDaoSession().getCatalogDao().queryBuilder().list();
+        Collections.sort(list, (catalog1, catalog2) -> catalog2.getUrl().compareTo(catalog1.getUrl()));
         return list;
     }
 

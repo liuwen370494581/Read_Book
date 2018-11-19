@@ -85,8 +85,8 @@ public class SearchBar extends LinearLayout {
         mIvSource.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                  Intent intent = new Intent(context, SourceSettingActivity.class);
-                 context.startActivity(intent);
+                Intent intent = new Intent(context, SourceSettingActivity.class);
+                context.startActivity(intent);
             }
         });
     }
@@ -97,9 +97,15 @@ public class SearchBar extends LinearLayout {
             ToastUtils.showCenterToast(getContext(), getContext().getString(R.string.book_is_not_empty));
             return;
         }
-         Intent intent = new Intent(getContext(), SearchResultActivity.class);
+        Intent intent = new Intent(getContext(), SearchResultActivity.class);
         intent.putExtra("text", text);
         getContext().startActivity(intent);
 
+    }
+
+    public void setEtSearchText(String text) {
+        if (mEtSearch != null) {
+            mEtSearch.setText(text);
+        }
     }
 }

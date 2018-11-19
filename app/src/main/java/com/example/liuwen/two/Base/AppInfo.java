@@ -12,6 +12,8 @@ import com.example.liuwen.two.utils.PromptDialogUtils;
 import java.io.File;
 import java.util.List;
 
+import GreenDao3.DaoManager;
+
 /**
  * author : liuwen
  * e-mail : liuwen370494581@163.com
@@ -26,6 +28,8 @@ public class AppInfo extends Application implements EventListener {
     @Override
     public void onCreate() {
         super.onCreate();
+        //初始化greenDao3
+        DaoManager.init(this);
     }
 
     @Override

@@ -6,6 +6,9 @@ import com.example.liuwen.two.Bean.Catalog;
 import com.example.liuwen.two.Bean.Chapter;
 import com.example.liuwen.two.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cn.bingoogolapple.androidcommon.adapter.BGARecyclerViewAdapter;
 import cn.bingoogolapple.androidcommon.adapter.BGAViewHolderHelper;
 
@@ -17,6 +20,7 @@ import cn.bingoogolapple.androidcommon.adapter.BGAViewHolderHelper;
  */
 public class ChapterAdapter extends BGARecyclerViewAdapter<Catalog> {
 
+    private boolean mIsAsc = true;
 
     public ChapterAdapter(RecyclerView recyclerView) {
         super(recyclerView, R.layout.item_chapter);
@@ -25,5 +29,46 @@ public class ChapterAdapter extends BGARecyclerViewAdapter<Catalog> {
     @Override
     protected void fillData(BGAViewHolderHelper helper, int position, Catalog model) {
         helper.setText(R.id.tv_content, model.getChapterName());
+    }
+
+    //正序
+    public void orderByDesc() {
+        if (mIsAsc) {
+            transformData();
+            mIsAsc = false;
+        }
+    }
+
+    //倒序
+    public void orderByAsc() {
+        if (!mIsAsc) {
+            transformData();
+            mIsAsc = true;
+        }
+
+    }
+
+    private void transformData() {
+        if (getData() != null && getData().size() != 0) {
+            List<Catalog> catalogList = new ArrayList<>(getData().size());
+            for (int i = getData().size() - 1; i >= 0; i--) {
+                catalogList.add(getData().get(i));
+            }
+            getData().clear();
+            getData().addAll(catalogList);
+            notifyDataSetChanged();
+        }
+    }
+
+    public boolean isAsc() {
+        return mIsAsc;
+    }
+
+
+    @Override
+    public void clear() {
+        mIsAsc = true;
+        super.clear();
+
     }
 }

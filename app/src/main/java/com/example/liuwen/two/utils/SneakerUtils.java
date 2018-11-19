@@ -22,7 +22,7 @@ public class SneakerUtils {
                 .autoHide(true) // Auto hide Sneaker view
                 .setHeight(ViewGroup.LayoutParams.WRAP_CONTENT) // Height of the Sneaker layout
                 .setIcon(R.drawable.ic_success, R.color.white, false) // Icon, icon tint color and circular icon view
-                .sneak(R.color.main_text_color_focus); // Sneak with background color
+                .sneak(R.color.theme_color); // Sneak with background color
     }
 
     public static void setOtherMessage(Activity activity, String title, String message, int color, int icon) {

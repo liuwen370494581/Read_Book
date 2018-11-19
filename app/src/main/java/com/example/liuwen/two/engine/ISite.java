@@ -3,6 +3,8 @@ package com.example.liuwen.two.engine;
 import com.example.liuwen.two.Bean.Book;
 import com.example.liuwen.two.listener.EventListener;
 
+import org.greenrobot.greendao.annotation.Entity;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.List;

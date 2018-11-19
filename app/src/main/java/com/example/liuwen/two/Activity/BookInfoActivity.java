@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -36,8 +38,10 @@ public class BookInfoActivity extends BaseActivity {
     private RecyclerView mRecyclerView;
     private Book mCurrentBook;
     private ImageView ivBookCover;
-    private TextView tvBookTitle, tvBookAuthor, tvBookNewChapter, tvBookUpdateTime, tvBookSource;
-    private TextView btnBookRead, btnAddBook;
+    private TextView tvBookTitle, tvBookAuthor, tvBookNewChapter, tvBookUpdateTime, tvBookSource, tvOrderBy;
+    private Button btnBookRead, btnAddBook;
+    private String mStrDesc = "倒序";
+    private String mStrAsc = "正序";
     private ChapterAdapter mAdapter;
     private MyReadHandler myReadHandler = new MyReadHandler(getActivityContext(), new OnHandlerListener() {
         @Override
@@ -60,8 +64,6 @@ public class BookInfoActivity extends BaseActivity {
         }
     });
 
-    public BookInfoActivity() {
-    }
 
     @Override
     protected int setLayoutRes() {
@@ -70,7 +72,6 @@ public class BookInfoActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-
         showLeftView();
         setCenterText("详细信息");
         ivBookCover = getView(R.id.iv_book_cover);
@@ -82,7 +83,7 @@ public class BookInfoActivity extends BaseActivity {
         btnAddBook = getView(R.id.id_click_add_book);
         tvBookSource = getView(R.id.tv_search_item_source);
         mRecyclerView = getView(R.id.rv_search_list);
-
+        tvOrderBy = getView(R.id.tv_order_by);
     }
 
     @Override
@@ -100,37 +101,43 @@ public class BookInfoActivity extends BaseActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivityContext()));
         mRecyclerView.setAdapter(mAdapter);
         searchBookChapter();
+
     }
 
     private void searchBookChapter() {
         PromptDialogUtils.getInstance().showPromptDialog("加载目录中");
         Message message = Message.obtain();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-
-                    ChapterSite site = (ChapterSite) mCurrentBook.getSite();
-                    String html = NetUtil.getHtml(mCurrentBook.getUrl(), site.getEncodeType());
-
-                    message.what = 0;
-                    message.obj = site.parseCatalog(html, mCurrentBook.getUrl());
-                    myReadHandler.sendMessage(message);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    message.what = 1;
-                    myReadHandler.sendMessage(message);
-                }
-
+        new Thread(() -> {
+            try {
+                ChapterSite site = (ChapterSite) mCurrentBook.getSite();
+                String html = NetUtil.getHtml(mCurrentBook.getUrl(), site.getEncodeType());
+                message.what = 0;
+                message.obj = site.parseCatalog(html, mCurrentBook.getUrl());
+                myReadHandler.sendMessage(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+                message.what = 1;
+                myReadHandler.sendMessage(message);
             }
+
         }).start();
 
     }
 
     @Override
     protected void setListener() {
-
-
+        tvOrderBy.setOnClickListener(v -> {
+            String str = tvOrderBy.getText().toString();
+            if (str.equals(mStrAsc)) {
+                //倒序
+                mAdapter.orderByDesc();
+                tvOrderBy.setText(mStrDesc);
+            } else if (str.equals(mStrDesc)) {
+                //正序
+                mAdapter.orderByAsc();
+                tvOrderBy.setText(mStrAsc);
+            }
+        });
     }
 
 }

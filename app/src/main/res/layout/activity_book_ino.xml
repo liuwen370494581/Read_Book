@@ -19,6 +19,7 @@
         android:layout_height="match_parent">
 
         <android.support.design.widget.AppBarLayout
+            android:background="@color/white"
             android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,9 +32,9 @@
                 app:layout_scrollFlags="scroll">
 
                 <LinearLayout
+                    android:background="@color/theme_color"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:padding="10dp">
@@ -61,11 +62,12 @@
                             android:ellipsize="end"
                             android:maxLines="1"
                             android:singleLine="true"
-                            android:textColor="@color/text_color_33"
+                            android:textColor="@color/white"
                             android:textSize="15dp"
                             tools:text="大唐荣耀" />
 
                         <TextView
+                            android:textColor="@color/white"
                             android:id="@+id/tv_book_author"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -78,6 +80,7 @@
                             tools:text="作者：" />
 
                         <TextView
+                            android:textColor="@color/white"
                             android:id="@+id/tv_book_newest_chapter"
                             android:layout_width="wrap_content"
                             android:layout_height="0dp"
@@ -93,6 +96,7 @@
                             tools:text="最新章节：" />
 
                         <TextView
+                            android:textColor="@color/white"
                             android:id="@+id/tv_book_update_time"
                             android:layout_width="wrap_content"
                             android:layout_height="0dp"
@@ -138,11 +142,16 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <Button
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/btn_add"
                         android:id="@+id/id_click_read"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
@@ -151,11 +160,13 @@
                         android:text="阅读"
                         android:textColor="@color/white" />
 
-                    <TextView
+                    <Button
+                        android:textColor="@color/white"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/btn_add"
                         android:id="@+id/id_click_add_book"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:layout_marginLeft="4dp"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="加入书架" />
@@ -165,7 +176,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:background="@color/line_color" />
 
                 <LinearLayout

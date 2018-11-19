@@ -2,7 +2,12 @@ package com.example.liuwen.two.Bean;
 
 import com.example.liuwen.two.engine.ISite;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
+
 import java.io.Serializable;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * author : liuwen
@@ -10,7 +15,9 @@ import java.io.Serializable;
  * time   : 2018/11/08 11:33
  * desc   :
  */
+@Entity
 public class Book implements Serializable {
+    @Id(autoincrement = true)
     private Long id;
     private String bookName;
     private String author = "未知";
@@ -18,8 +25,9 @@ public class Book implements Serializable {
     private String chapterSize = "未知";
     private String lastUpdateTime = "未知";
     private String lastChapterName = "未知";
+    @Transient
     private ISite site;
-    private String  source;
+    private String source;
 
 
     public Book(String bookName, String author, String url, String chapterSize, String lastUpdateTime, String lastChapterName, ISite site, String source) {
@@ -31,6 +39,22 @@ public class Book implements Serializable {
         this.lastChapterName = lastChapterName;
         this.site = site;
         this.source = source;
+    }
+
+    @Generated(hash = 1493694612)
+    public Book(Long id, String bookName, String author, String url, String chapterSize, String lastUpdateTime, String lastChapterName, String source) {
+        this.id = id;
+        this.bookName = bookName;
+        this.author = author;
+        this.url = url;
+        this.chapterSize = chapterSize;
+        this.lastUpdateTime = lastUpdateTime;
+        this.lastChapterName = lastChapterName;
+        this.source = source;
+    }
+
+    @Generated(hash = 1839243756)
+    public Book() {
     }
 
     public ISite getSite() {
@@ -109,5 +133,13 @@ public class Book implements Serializable {
 
     public void setLastChapterName(String lastChapterName) {
         this.lastChapterName = lastChapterName;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

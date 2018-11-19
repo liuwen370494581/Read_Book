@@ -10,16 +10,22 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.liuwen.two.Action.BookAction;
 import com.example.liuwen.two.Action.MyReadHandler;
 import com.example.liuwen.two.Adapter.SearchResultAdapter;
 import com.example.liuwen.two.Base.BaseActivity;
 import com.example.liuwen.two.Bean.Book;
+import com.example.liuwen.two.Bean.Catalog;
+import com.example.liuwen.two.EventBus.C;
+import com.example.liuwen.two.EventBus.Event;
+import com.example.liuwen.two.EventBus.EventBusUtil;
 import com.example.liuwen.two.R;
 import com.example.liuwen.two.View.DividerItemDecoration;
 import com.example.liuwen.two.View.promptlibrary.PromptDialog;
 import com.example.liuwen.two.engine.Downloader;
 import com.example.liuwen.two.listener.EventListener;
 import com.example.liuwen.two.listener.OnHandlerListener;
+import com.example.liuwen.two.utils.DateTimeUtils;
 import com.example.liuwen.two.utils.PromptDialogUtils;
 import com.example.liuwen.two.utils.SneakerUtils;
 import com.example.liuwen.two.utils.ToastUtils;
@@ -30,7 +36,10 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import GreenDao3.BookDaoHolder;
+import GreenDao3.CatalogDaoHolder;
 import cn.bingoogolapple.androidcommon.adapter.BGAOnRVItemClickListener;
 
 /**
@@ -61,6 +70,14 @@ public class SearchResultActivity extends BaseActivity implements EventListener 
                         if (mSearchBooks != null) {
                             activity.mAdapter.setData(mSearchBooks);
                         }
+                        if (BookAction.isSameBooK(activity.bookName)) {
+                            Catalog catalog = BookAction.backBookHistory(bookName);
+                            catalog.setUrl(DateTimeUtils.getCurrentTimeExactToSecond());
+                            CatalogDaoHolder.update(catalog);
+                        } else {
+                            CatalogDaoHolder.insert(new Catalog(CatalogDaoHolder.getCount(), activity.bookName, DateTimeUtils.getCurrentTimeExactToSecond(), 0));
+                        }
+                        EventBusUtil.sendEvent(new Event(C.EventCode.BookHistory));
                         break;
                     case 1:
                         String msg = (String) message.obj;
@@ -73,9 +90,9 @@ public class SearchResultActivity extends BaseActivity implements EventListener 
                     case 3:
                         break;
                     case 4:
-                        String errMsg= (String) message.obj;
-                        if(errMsg!=null){
-                            SneakerUtils.setOtherMessage(activity,"错误信息反馈",errMsg,R.color.red,R.drawable.ic_error);
+                        String errMsg = (String) message.obj;
+                        if (errMsg != null) {
+                            SneakerUtils.setOtherMessage(activity, "错误信息反馈", errMsg, R.color.red, R.drawable.ic_error);
                         }
                         break;
                     default:

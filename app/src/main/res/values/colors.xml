@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#00000000</color>
-    <color name="colorPrimaryDark">#00000000</color>
+    <color name="colorPrimary">#DAB177</color>
+    <color name="colorPrimaryDark">#DAB177</color>
     <color name="colorAccent">#FF4081</color>
     <color name="white">#FFFFFF</color>
     <color name="line_color">#d0d0d0</color>
@@ -17,4 +17,5 @@
 
     <color name="bg_color">#f0eff4</color>
     <color name="main_text_color_focus">#40c6bf</color>
+    <color name="theme_color">#DAB177</color>
 </resources>
