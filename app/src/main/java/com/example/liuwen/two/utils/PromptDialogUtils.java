@@ -34,7 +34,7 @@ public class PromptDialogUtils {
 
     public void init(Activity activity) {
         promptDialog = new PromptDialog(activity);
-        promptDialog.getDefaultBuilder().touchAble(true).round(3).withAnim(true);
+        promptDialog.getDefaultBuilder().touchAble(true).round(5);
     }
 
     public  void showPromptDialog(String message) {

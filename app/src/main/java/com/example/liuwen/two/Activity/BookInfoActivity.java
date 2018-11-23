@@ -1,14 +1,17 @@
 package com.example.liuwen.two.Activity;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.liuwen.two.Action.CatalogsHolder;
 import com.example.liuwen.two.Action.MyReadHandler;
 import com.example.liuwen.two.Adapter.ChapterAdapter;
 import com.example.liuwen.two.Base.BaseActivity;
@@ -22,11 +25,15 @@ import com.example.liuwen.two.utils.GlideUtils;
 import com.example.liuwen.two.utils.NetUtil;
 import com.example.liuwen.two.utils.PromptDialogUtils;
 import com.example.liuwen.two.utils.SneakerUtils;
+import com.example.liuwen.two.utils.ThreadPoolUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
+
+import cn.bingoogolapple.androidcommon.adapter.BGAOnRVItemClickListener;
 
 /**
  * author : liuwen
@@ -43,23 +50,20 @@ public class BookInfoActivity extends BaseActivity {
     private String mStrDesc = "倒序";
     private String mStrAsc = "正序";
     private ChapterAdapter mAdapter;
-    private MyReadHandler myReadHandler = new MyReadHandler(getActivityContext(), new OnHandlerListener() {
-        @Override
-        public void handlerMessage(Message message, WeakReference<Context> reference) {
-            BookInfoActivity activity = (BookInfoActivity) reference.get();
-            if (activity != null) {
-                switch (message.what) {
-                    case 0:
-                        PromptDialogUtils.getInstance().hidePromptDialog();
-                        List<Catalog> mTemList = (List<Catalog>) message.obj;
-                        activity.mAdapter.setData(mTemList);
-                        break;
-                    case 1:
-                        PromptDialogUtils.getInstance().hidePromptDialog();
-                        SneakerUtils.setOtherMessage(activity, "获取结果", "获取目录失败", R.color.red, R.drawable.ic_error);
-                    default:
-                        break;
-                }
+    private MyReadHandler myReadHandler = new MyReadHandler(getActivityContext(), (message, reference) -> {
+        BookInfoActivity activity = (BookInfoActivity) reference.get();
+        if (activity != null) {
+            switch (message.what) {
+                case 0:
+                    PromptDialogUtils.getInstance().hidePromptDialog();
+                    List<Catalog> mTemList = (List<Catalog>) message.obj;
+                    activity.mAdapter.setData(mTemList);
+                    break;
+                case 1:
+                    PromptDialogUtils.getInstance().hidePromptDialog();
+                    SneakerUtils.setOtherMessage(activity, "获取结果", "获取目录失败", R.color.red, R.drawable.ic_error);
+                default:
+                    break;
             }
         }
     });
@@ -107,7 +111,7 @@ public class BookInfoActivity extends BaseActivity {
     private void searchBookChapter() {
         PromptDialogUtils.getInstance().showPromptDialog("加载目录中");
         Message message = Message.obtain();
-        new Thread(() -> {
+        ThreadPoolUtils.getInstance().getThreadPool().execute(() -> {
             try {
                 ChapterSite site = (ChapterSite) mCurrentBook.getSite();
                 String html = NetUtil.getHtml(mCurrentBook.getUrl(), site.getEncodeType());
@@ -120,8 +124,7 @@ public class BookInfoActivity extends BaseActivity {
                 myReadHandler.sendMessage(message);
             }
 
-        }).start();
-
+        });
     }
 
     @Override
@@ -136,6 +139,16 @@ public class BookInfoActivity extends BaseActivity {
                 //正序
                 mAdapter.orderByAsc();
                 tvOrderBy.setText(mStrAsc);
+            }
+        });
+
+        mAdapter.setOnRVItemClickListener((parent, itemView, position) -> {
+            if (mAdapter.getData() != null) {
+                CatalogsHolder.getInstance().setCatalogs((ArrayList<Catalog>) mAdapter.getData(),mCurrentBook);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("book", mCurrentBook);
+                bundle.putInt("position", position);
+                openActivity(ReadBookActivity.class, bundle);
             }
         });
     }

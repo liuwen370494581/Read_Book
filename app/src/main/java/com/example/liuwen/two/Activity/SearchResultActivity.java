@@ -28,6 +28,7 @@ import com.example.liuwen.two.listener.OnHandlerListener;
 import com.example.liuwen.two.utils.DateTimeUtils;
 import com.example.liuwen.two.utils.PromptDialogUtils;
 import com.example.liuwen.two.utils.SneakerUtils;
+import com.example.liuwen.two.utils.ThreadPoolUtils;
 import com.example.liuwen.two.utils.ToastUtils;
 import com.irozon.sneaker.Sneaker;
 import com.liaoinstan.springview.widget.SpringView;
@@ -131,9 +132,12 @@ public class SearchResultActivity extends BaseActivity implements EventListener 
     private void searchBookForName() {
         mAdapter.setTitle(bookName);
         PromptDialogUtils.getInstance().showPromptDialog("正在搜索中");
-        new Thread(() -> {
-            mDownLoader.search(bookName);
-        }).start();
+        ThreadPoolUtils.getInstance().getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                mDownLoader.search(bookName);
+            }
+        });
     }
 
     @Override

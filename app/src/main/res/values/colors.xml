@@ -18,4 +18,8 @@
     <color name="bg_color">#f0eff4</color>
     <color name="main_text_color_focus">#40c6bf</color>
     <color name="theme_color">#DAB177</color>
+
+    <color name="preview_theme_white">#EEE6CB</color>
+    <color name="preview_theme_dark">#0B0B0A</color>
+    <color name="previewShadow">#de0d0d0d</color>
 </resources>

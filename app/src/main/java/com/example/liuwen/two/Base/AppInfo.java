@@ -8,6 +8,7 @@ import com.example.liuwen.two.Bean.Book;
 import com.example.liuwen.two.engine.Downloader;
 import com.example.liuwen.two.listener.EventListener;
 import com.example.liuwen.two.utils.PromptDialogUtils;
+import com.example.liuwen.two.utils.ThreadPoolUtils;
 
 import java.io.File;
 import java.util.List;
@@ -30,6 +31,7 @@ public class AppInfo extends Application implements EventListener {
         super.onCreate();
         //初始化greenDao3
         DaoManager.init(this);
+        ThreadPoolUtils.init();
     }
 
     @Override

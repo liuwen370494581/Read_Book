@@ -23,8 +23,9 @@
         </activity>
 
         <activity android:name=".Activity.SourceSettingActivity" />
-        <activity android:name=".Activity.SearchResultActivity"/>
-        <activity android:name=".Activity.BookInfoActivity"/>
+        <activity android:name=".Activity.SearchResultActivity" />
+        <activity android:name=".Activity.BookInfoActivity" />
+        <activity android:name=".Activity.ReadBookActivity" />
     </application>
 
 </manifest>
