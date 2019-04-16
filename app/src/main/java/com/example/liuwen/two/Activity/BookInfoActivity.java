@@ -11,16 +11,21 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.liuwen.two.Action.BookAction;
 import com.example.liuwen.two.Action.CatalogsHolder;
 import com.example.liuwen.two.Action.MyReadHandler;
 import com.example.liuwen.two.Adapter.ChapterAdapter;
 import com.example.liuwen.two.Base.BaseActivity;
 import com.example.liuwen.two.Bean.Book;
 import com.example.liuwen.two.Bean.Catalog;
+import com.example.liuwen.two.EventBus.C;
+import com.example.liuwen.two.EventBus.Event;
+import com.example.liuwen.two.EventBus.EventBusUtil;
 import com.example.liuwen.two.R;
 import com.example.liuwen.two.engine.ChapterSite;
 import com.example.liuwen.two.listener.EventListener;
 import com.example.liuwen.two.listener.OnHandlerListener;
+import com.example.liuwen.two.utils.DateTimeUtils;
 import com.example.liuwen.two.utils.GlideUtils;
 import com.example.liuwen.two.utils.NetUtil;
 import com.example.liuwen.two.utils.PromptDialogUtils;
@@ -33,6 +38,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import GreenDao3.BookDaoHolder;
+import GreenDao3.CatalogDaoHolder;
 import cn.bingoogolapple.androidcommon.adapter.BGAOnRVItemClickListener;
 
 /**
@@ -50,14 +57,15 @@ public class BookInfoActivity extends BaseActivity {
     private String mStrDesc = "倒序";
     private String mStrAsc = "正序";
     private ChapterAdapter mAdapter;
+    private List<Catalog> mCatalogList = new ArrayList<>();
     private MyReadHandler myReadHandler = new MyReadHandler(getActivityContext(), (message, reference) -> {
         BookInfoActivity activity = (BookInfoActivity) reference.get();
         if (activity != null) {
             switch (message.what) {
                 case 0:
                     PromptDialogUtils.getInstance().hidePromptDialog();
-                    List<Catalog> mTemList = (List<Catalog>) message.obj;
-                    activity.mAdapter.setData(mTemList);
+                    activity.mCatalogList = (List<Catalog>) message.obj;
+                    activity.mAdapter.setData(activity.mCatalogList);
                     break;
                 case 1:
                     PromptDialogUtils.getInstance().hidePromptDialog();
@@ -100,6 +108,11 @@ public class BookInfoActivity extends BaseActivity {
             tvBookUpdateTime.setText("最后更新：" + mCurrentBook.getLastUpdateTime());
             tvBookNewChapter.setText("最新章节：" + mCurrentBook.getLastChapterName());
             tvBookSource.setText("来源：" + mCurrentBook.getSource());
+            if (BookAction.isSameBookFormBookBean(mCurrentBook.getBookName())) {
+                btnAddBook.setText("已添加");
+            } else {
+                btnAddBook.setText("添加书架");
+            }
         }
         mAdapter = new ChapterAdapter(mRecyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivityContext()));
@@ -114,7 +127,7 @@ public class BookInfoActivity extends BaseActivity {
         ThreadPoolUtils.getInstance().getThreadPool().execute(() -> {
             try {
                 ChapterSite site = (ChapterSite) mCurrentBook.getSite();
-                String html = NetUtil.getHtml(mCurrentBook.getUrl(), site.getEncodeType());
+                String html = NetUtil.getHtml(mCurrentBook.getUrl(), "gbk");
                 message.what = 0;
                 message.obj = site.parseCatalog(html, mCurrentBook.getUrl());
                 myReadHandler.sendMessage(message);
@@ -144,13 +157,31 @@ public class BookInfoActivity extends BaseActivity {
 
         mAdapter.setOnRVItemClickListener((parent, itemView, position) -> {
             if (mAdapter.getData() != null) {
-                CatalogsHolder.getInstance().setCatalogs((ArrayList<Catalog>) mAdapter.getData(),mCurrentBook);
+                CatalogsHolder.getInstance().setCatalogs((ArrayList<Catalog>) mAdapter.getData(), mCurrentBook);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("book", mCurrentBook);
                 bundle.putInt("position", position);
                 openActivity(ReadBookActivity.class, bundle);
             }
         });
-    }
 
+        //添加到书架
+        btnAddBook.setOnClickListener(v -> {
+            BookDaoHolder.insert(new Book(BookDaoHolder.getCount(), mCurrentBook.getBookName(),
+                    mCurrentBook.getAuthor(), mCurrentBook.getUrl(), mCurrentBook.getChapterSize(),
+                    mCurrentBook.getLastUpdateTime(), mCurrentBook.getLastChapterName(),
+                    mCurrentBook.getSource(), DateTimeUtils.getCurrentTimeExactToSecond()));
+            btnAddBook.setText("已添加");
+            EventBusUtil.sendEvent(new Event(C.EventCode.AddBookShelf));
+        });
+
+        //开始阅读
+        btnBookRead.setOnClickListener(v -> {
+            CatalogsHolder.getInstance().setCatalogs((ArrayList<Catalog>) mCatalogList, mCurrentBook);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("book", mCurrentBook);
+            bundle.putInt("position", 0);//从第一章开始阅读
+            openActivity(ReadBookActivity.class, bundle);
+        });
+    }
 }

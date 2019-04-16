@@ -7,6 +7,7 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
+
 import org.greenrobot.greendao.annotation.Generated;
 
 /**
@@ -28,6 +29,8 @@ public class Book implements Serializable {
     @Transient
     private ISite site;
     private String source;
+    private String addBookTime;//添加到书架的时间 用来排序
+
 
 
     public Book(String bookName, String author, String url, String chapterSize, String lastUpdateTime, String lastChapterName, ISite site, String source) {
@@ -41,8 +44,9 @@ public class Book implements Serializable {
         this.source = source;
     }
 
-    @Generated(hash = 1493694612)
-    public Book(Long id, String bookName, String author, String url, String chapterSize, String lastUpdateTime, String lastChapterName, String source) {
+    @Generated(hash = 1062712077)
+    public Book(Long id, String bookName, String author, String url, String chapterSize, String lastUpdateTime, String lastChapterName, String source,
+            String addBookTime) {
         this.id = id;
         this.bookName = bookName;
         this.author = author;
@@ -51,6 +55,7 @@ public class Book implements Serializable {
         this.lastUpdateTime = lastUpdateTime;
         this.lastChapterName = lastChapterName;
         this.source = source;
+        this.addBookTime = addBookTime;
     }
 
     @Generated(hash = 1839243756)
@@ -142,4 +147,12 @@ public class Book implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+    public String getAddBookTime() {
+        return addBookTime;
+    }
+
+    public void setAddBookTime(String addBookTime) {
+        this.addBookTime = addBookTime;
+    }
+
 }

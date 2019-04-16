@@ -32,6 +32,7 @@ public class BookDao extends AbstractDao<Book, Long> {
         public final static Property LastUpdateTime = new Property(5, String.class, "lastUpdateTime", false, "LAST_UPDATE_TIME");
         public final static Property LastChapterName = new Property(6, String.class, "lastChapterName", false, "LAST_CHAPTER_NAME");
         public final static Property Source = new Property(7, String.class, "source", false, "SOURCE");
+        public final static Property AddBookTime = new Property(8, String.class, "addBookTime", false, "ADD_BOOK_TIME");
     }
 
 
@@ -54,7 +55,8 @@ public class BookDao extends AbstractDao<Book, Long> {
                 "\"CHAPTER_SIZE\" TEXT," + // 4: chapterSize
                 "\"LAST_UPDATE_TIME\" TEXT," + // 5: lastUpdateTime
                 "\"LAST_CHAPTER_NAME\" TEXT," + // 6: lastChapterName
-                "\"SOURCE\" TEXT);"); // 7: source
+                "\"SOURCE\" TEXT," + // 7: source
+                "\"ADD_BOOK_TIME\" TEXT);"); // 8: addBookTime
     }
 
     /** Drops the underlying database table. */
@@ -106,6 +108,11 @@ public class BookDao extends AbstractDao<Book, Long> {
         if (source != null) {
             stmt.bindString(8, source);
         }
+ 
+        String addBookTime = entity.getAddBookTime();
+        if (addBookTime != null) {
+            stmt.bindString(9, addBookTime);
+        }
     }
 
     @Override
@@ -151,6 +158,11 @@ public class BookDao extends AbstractDao<Book, Long> {
         if (source != null) {
             stmt.bindString(8, source);
         }
+ 
+        String addBookTime = entity.getAddBookTime();
+        if (addBookTime != null) {
+            stmt.bindString(9, addBookTime);
+        }
     }
 
     @Override
@@ -168,7 +180,8 @@ public class BookDao extends AbstractDao<Book, Long> {
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // chapterSize
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // lastUpdateTime
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // lastChapterName
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // source
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // source
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // addBookTime
         );
         return entity;
     }
@@ -183,6 +196,7 @@ public class BookDao extends AbstractDao<Book, Long> {
         entity.setLastUpdateTime(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setLastChapterName(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setSource(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setAddBookTime(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
      }
     
     @Override

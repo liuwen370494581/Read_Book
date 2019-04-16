@@ -72,7 +72,7 @@ public class SearchResultActivity extends BaseActivity implements EventListener 
                             activity.mAdapter.setData(mSearchBooks);
                         }
                         if (BookAction.isSameBooK(activity.bookName)) {
-                            Catalog catalog = BookAction.backBookHistory(bookName);
+                            Catalog catalog = BookAction.backCatalogHistory(bookName);
                             catalog.setUrl(DateTimeUtils.getCurrentTimeExactToSecond());
                             CatalogDaoHolder.update(catalog);
                         } else {

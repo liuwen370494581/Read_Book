@@ -33,14 +33,9 @@ public class BookDaoHolder {
     }
 
     public static List<Book> query() {
-        List<Book> list = new ArrayList<>();
+        List<Book> list;
         list = DaoManager.getInstance().getDaoSession().getBookDao().queryBuilder().list();
-        Collections.sort(list, new Comparator<Book>() {
-            @Override
-            public int compare(Book book1, Book book2) {
-                return book2.getLastUpdateTime().compareTo(book1.getLastUpdateTime());
-            }
-        });
+        Collections.sort(list, (book1, book2) -> book2.getAddBookTime().compareTo(book1.getAddBookTime()));
         return list;
     }
 
