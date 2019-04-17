@@ -28,11 +28,13 @@ public class BookDao extends AbstractDao<Book, Long> {
         public final static Property BookName = new Property(1, String.class, "bookName", false, "BOOK_NAME");
         public final static Property Author = new Property(2, String.class, "author", false, "AUTHOR");
         public final static Property Url = new Property(3, String.class, "url", false, "URL");
-        public final static Property ChapterSize = new Property(4, String.class, "chapterSize", false, "CHAPTER_SIZE");
-        public final static Property LastUpdateTime = new Property(5, String.class, "lastUpdateTime", false, "LAST_UPDATE_TIME");
-        public final static Property LastChapterName = new Property(6, String.class, "lastChapterName", false, "LAST_CHAPTER_NAME");
-        public final static Property Source = new Property(7, String.class, "source", false, "SOURCE");
-        public final static Property AddBookTime = new Property(8, String.class, "addBookTime", false, "ADD_BOOK_TIME");
+        public final static Property ImageUrl = new Property(4, String.class, "imageUrl", false, "IMAGE_URL");
+        public final static Property ChapterSize = new Property(5, String.class, "chapterSize", false, "CHAPTER_SIZE");
+        public final static Property LastUpdateTime = new Property(6, String.class, "lastUpdateTime", false, "LAST_UPDATE_TIME");
+        public final static Property LastChapterName = new Property(7, String.class, "lastChapterName", false, "LAST_CHAPTER_NAME");
+        public final static Property Source = new Property(8, String.class, "source", false, "SOURCE");
+        public final static Property SiteName = new Property(9, String.class, "siteName", false, "SITE_NAME");
+        public final static Property AddBookTime = new Property(10, String.class, "addBookTime", false, "ADD_BOOK_TIME");
     }
 
 
@@ -52,11 +54,13 @@ public class BookDao extends AbstractDao<Book, Long> {
                 "\"BOOK_NAME\" TEXT," + // 1: bookName
                 "\"AUTHOR\" TEXT," + // 2: author
                 "\"URL\" TEXT," + // 3: url
-                "\"CHAPTER_SIZE\" TEXT," + // 4: chapterSize
-                "\"LAST_UPDATE_TIME\" TEXT," + // 5: lastUpdateTime
-                "\"LAST_CHAPTER_NAME\" TEXT," + // 6: lastChapterName
-                "\"SOURCE\" TEXT," + // 7: source
-                "\"ADD_BOOK_TIME\" TEXT);"); // 8: addBookTime
+                "\"IMAGE_URL\" TEXT," + // 4: imageUrl
+                "\"CHAPTER_SIZE\" TEXT," + // 5: chapterSize
+                "\"LAST_UPDATE_TIME\" TEXT," + // 6: lastUpdateTime
+                "\"LAST_CHAPTER_NAME\" TEXT," + // 7: lastChapterName
+                "\"SOURCE\" TEXT," + // 8: source
+                "\"SITE_NAME\" TEXT," + // 9: siteName
+                "\"ADD_BOOK_TIME\" TEXT);"); // 10: addBookTime
     }
 
     /** Drops the underlying database table. */
@@ -89,29 +93,39 @@ public class BookDao extends AbstractDao<Book, Long> {
             stmt.bindString(4, url);
         }
  
+        String imageUrl = entity.getImageUrl();
+        if (imageUrl != null) {
+            stmt.bindString(5, imageUrl);
+        }
+ 
         String chapterSize = entity.getChapterSize();
         if (chapterSize != null) {
-            stmt.bindString(5, chapterSize);
+            stmt.bindString(6, chapterSize);
         }
  
         String lastUpdateTime = entity.getLastUpdateTime();
         if (lastUpdateTime != null) {
-            stmt.bindString(6, lastUpdateTime);
+            stmt.bindString(7, lastUpdateTime);
         }
  
         String lastChapterName = entity.getLastChapterName();
         if (lastChapterName != null) {
-            stmt.bindString(7, lastChapterName);
+            stmt.bindString(8, lastChapterName);
         }
  
         String source = entity.getSource();
         if (source != null) {
-            stmt.bindString(8, source);
+            stmt.bindString(9, source);
+        }
+ 
+        String siteName = entity.getSiteName();
+        if (siteName != null) {
+            stmt.bindString(10, siteName);
         }
  
         String addBookTime = entity.getAddBookTime();
         if (addBookTime != null) {
-            stmt.bindString(9, addBookTime);
+            stmt.bindString(11, addBookTime);
         }
     }
 
@@ -139,29 +153,39 @@ public class BookDao extends AbstractDao<Book, Long> {
             stmt.bindString(4, url);
         }
  
+        String imageUrl = entity.getImageUrl();
+        if (imageUrl != null) {
+            stmt.bindString(5, imageUrl);
+        }
+ 
         String chapterSize = entity.getChapterSize();
         if (chapterSize != null) {
-            stmt.bindString(5, chapterSize);
+            stmt.bindString(6, chapterSize);
         }
  
         String lastUpdateTime = entity.getLastUpdateTime();
         if (lastUpdateTime != null) {
-            stmt.bindString(6, lastUpdateTime);
+            stmt.bindString(7, lastUpdateTime);
         }
  
         String lastChapterName = entity.getLastChapterName();
         if (lastChapterName != null) {
-            stmt.bindString(7, lastChapterName);
+            stmt.bindString(8, lastChapterName);
         }
  
         String source = entity.getSource();
         if (source != null) {
-            stmt.bindString(8, source);
+            stmt.bindString(9, source);
+        }
+ 
+        String siteName = entity.getSiteName();
+        if (siteName != null) {
+            stmt.bindString(10, siteName);
         }
  
         String addBookTime = entity.getAddBookTime();
         if (addBookTime != null) {
-            stmt.bindString(9, addBookTime);
+            stmt.bindString(11, addBookTime);
         }
     }
 
@@ -177,11 +201,13 @@ public class BookDao extends AbstractDao<Book, Long> {
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // bookName
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // author
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // url
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // chapterSize
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // lastUpdateTime
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // lastChapterName
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // source
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // addBookTime
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // imageUrl
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // chapterSize
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // lastUpdateTime
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // lastChapterName
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // source
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // siteName
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10) // addBookTime
         );
         return entity;
     }
@@ -192,11 +218,13 @@ public class BookDao extends AbstractDao<Book, Long> {
         entity.setBookName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setAuthor(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setUrl(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setChapterSize(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setLastUpdateTime(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setLastChapterName(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setSource(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setAddBookTime(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setImageUrl(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setChapterSize(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setLastUpdateTime(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setLastChapterName(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setSource(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setSiteName(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setAddBookTime(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
      }
     
     @Override

@@ -1,6 +1,6 @@
 package com.example.liuwen.two.Bean;
-
-import com.example.liuwen.two.engine.ISite;
+import com.example.liuwen.two.engine.Site;
+import com.example.liuwen.two.engine.SiteCollection;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
@@ -23,66 +23,77 @@ public class Book implements Serializable {
     private String bookName;
     private String author = "未知";
     private String url;
+    private String imageUrl;
     private String chapterSize = "未知";
     private String lastUpdateTime = "未知";
     private String lastChapterName = "未知";
-    @Transient
-    private ISite site;
     private String source;
+    private String siteName;
     private String addBookTime;//添加到书架的时间 用来排序
 
 
+    public Site getSite() {
+        for (Site site : SiteCollection.getInstance().getAllSites()) {
+            if (site.getSiteName().equals(siteName)) {
+                return site;
+            }
+        }
+        return null;
+    }
 
-    public Book(String bookName, String author, String url, String chapterSize, String lastUpdateTime, String lastChapterName, ISite site, String source) {
+
+    public Book(String bookName, String author, String url, String chapterSize, String lastUpdateTime, String lastChapterName, String siteName) {
+        this(bookName, author, url, "", chapterSize, lastUpdateTime, lastChapterName, siteName);
+    }
+
+    public Book(String bookName, String author, String url, String imageUrl, String chapterSize, String lastUpdateTime, String lastChapterName, String siteName) {
         this.bookName = bookName;
         this.author = author;
         this.url = url;
+        this.imageUrl = imageUrl;
         this.chapterSize = chapterSize;
         this.lastUpdateTime = lastUpdateTime;
         this.lastChapterName = lastChapterName;
-        this.site = site;
-        this.source = source;
+        this.siteName = siteName;
     }
 
-    @Generated(hash = 1062712077)
-    public Book(Long id, String bookName, String author, String url, String chapterSize, String lastUpdateTime, String lastChapterName, String source,
-            String addBookTime) {
-        this.id = id;
-        this.bookName = bookName;
-        this.author = author;
-        this.url = url;
-        this.chapterSize = chapterSize;
-        this.lastUpdateTime = lastUpdateTime;
-        this.lastChapterName = lastChapterName;
-        this.source = source;
-        this.addBookTime = addBookTime;
-    }
 
     @Generated(hash = 1839243756)
     public Book() {
     }
 
-    public ISite getSite() {
-        return site;
+
+    @Generated(hash = 737918271)
+    public Book(Long id, String bookName, String author, String url, String imageUrl, String chapterSize, String lastUpdateTime, String lastChapterName,
+            String source, String siteName, String addBookTime) {
+        this.id = id;
+        this.bookName = bookName;
+        this.author = author;
+        this.url = url;
+        this.imageUrl = imageUrl;
+        this.chapterSize = chapterSize;
+        this.lastUpdateTime = lastUpdateTime;
+        this.lastChapterName = lastChapterName;
+        this.source = source;
+        this.siteName = siteName;
+        this.addBookTime = addBookTime;
     }
 
-    public void setSite(ISite site) {
-        this.site = site;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    @Override
-    public String toString() {
-        return "Book{" +
-                " bookName='" + bookName + '\'' +
-                ", author='" + author + '\'' +
-                ", url='" + url + '\'' +
-                ", chapterSize='" + chapterSize + '\'' +
-                ", lastUpdateTime='" + lastUpdateTime + '\'' +
-                ", lastChapterName='" + lastChapterName + '\'' +
-                ", site=" + site +
-                '}';
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
+    public String getSiteName() {
+        return siteName;
+    }
+
+    public void setSiteName(String siteName) {
+        this.siteName = siteName;
+    }
 
     public String getSource() {
         return source;
@@ -147,6 +158,7 @@ public class Book implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
     public String getAddBookTime() {
         return addBookTime;
     }

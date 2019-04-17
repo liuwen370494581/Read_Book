@@ -2,7 +2,7 @@ package com.example.liuwen.two.source;
 
 import com.example.liuwen.two.Bean.Book;
 import com.example.liuwen.two.Bean.Catalog;
-import com.example.liuwen.two.engine.ChapterSite;
+import com.example.liuwen.two.engine.Site;
 import com.example.liuwen.two.utils.BookGriper;
 import com.example.liuwen.two.utils.NetUtil;
 
@@ -19,10 +19,10 @@ import java.util.List;
 /**
  * author : liuwen
  * e-mail : liuwen370494581@163.com
- * time   : 2018/11/08 13:51
- * desc   : 新笔趣阁
+ * time   : 2019/04/16 17:05
+ * desc   :
  */
-public class NewBiQuGe extends ChapterSite {
+public class Xbiquge extends Site {
 
     private static final String root = "https://www.xbiquge6.com";
 
@@ -41,26 +41,28 @@ public class NewBiQuGe extends ChapterSite {
         String html = NetUtil.getHtml("https://www.xbiquge6.com/search.php?keyword="
                 + URLEncoder.encode(bookName, getEncodeType()), getEncodeType());
 
-        Elements items = Jsoup.parse(html).getElementsByClass("result-game-item-detail");
+        Elements items = Jsoup.parse(html).getElementsByClass("result-item result-game-item");
         if (items == null || items.size() <= 0) {
             throw new IOException();
         }
 
         List<Book> bookList = new ArrayList<>();
         for (Element item : items) {
-            String bkName = item.getElementsByTag("a").first().attr("title");
-            String url = item.getElementsByTag("a").first().attr("href");
-            Elements tags = item.getElementsByClass("result-game-item-info-tag");
+            Element detail = item.getElementsByClass("result-game-item-detail").first();
+            String bkName = detail.getElementsByTag("a").first().attr("title");
+            String url = detail.getElementsByTag("a").first().attr("href");
+            Elements tags = detail.getElementsByClass("result-game-item-info-tag");
             String author = tags.get(0).getElementsByTag("span").get(1).text();
             String lastUpdateTime = tags.get(2).getElementsByTag("span").get(1).text();
             String lastChapterName = tags.get(3).getElementsByTag("a").text();
-            bookList.add(new Book(bkName, author, url, "未知", lastUpdateTime, lastChapterName, this,getSiteName()));
+            String imageUrl = item.getElementsByTag("img").get(0).attr("src");
+            bookList.add(new Book(bkName, author, url, imageUrl, "未知", lastUpdateTime, lastChapterName, getSiteName()));
         }
         return bookList;
     }
 
     @Override
-    public List<Catalog> parseCatalog(String catalogHtml, String url) {
+    public List<Catalog> parseCatalog(String catalogHtml, String rootUrl) {
         Element listElement = Jsoup.parse(catalogHtml).getElementById("list");
         List<Catalog> catalogs = new ArrayList<>();
         for (Element a : listElement.getElementsByTag("a")) {

@@ -1,7 +1,7 @@
 package com.example.liuwen.two.utils;
 
 import com.example.liuwen.two.Bean.Book;
-import com.example.liuwen.two.engine.ISite;
+import com.example.liuwen.two.Bean.Catalog;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -28,34 +28,50 @@ public class BookGriper {
      * @param s        网站识别码
      * @return
      */
-    public static List<Book> baidu(ISite site, String bookName, String s) throws Exception {
+    public static List<Book> baidu(String bookName, String siteName, String s) throws Exception {
         String url = "http://zhannei.baidu.com/cse/search?q="
-                + URLEncoder.encode(bookName, "gbk")
+                + URLEncoder.encode(bookName, "utf-8")
                 + "&s=" + s;
         String html = NetUtil.getHtml(url, "utf-8");
+        return parseBaiduBooks(html, siteName);
+    }
 
+    public static List<Book> parseBaiduBooks(String html, String siteName) throws IOException {
         Element body = Jsoup.parse(html).body();
-        Elements results = body.getElementsByClass("result-list");
-        if (results.size() == 0) {
+        Elements items = body.getElementsByClass("result-item result-game-item");
+        if (items.size() == 0) {
             throw new IOException();
         }
-
-        Elements details = results.get(0).getElementsByClass("result-game-item-detail");
-        List<Book> bookList = new ArrayList<>(details.size());
-        for (Element detail : details) {
+        List<Book> bookList = new ArrayList<>(items.size());
+        for (Element item : items) {
+            Element detail = item.getElementsByClass("result-game-item-detail").get(0);
             Element titleElement = detail.getElementsByClass("result-game-item-title-link").get(0);
             String bkName = titleElement.getElementsByAttribute("title").get(0).text();
             String bkUrl = titleElement.attr("href");
-            Elements spans = detail.getElementsByTag("span");
-            String author = spans.get(1).text();
-            String lastUpdateTime = spans.get(5).text();
-            String lastChapterName = detail.getElementsByClass("result-game-item-info-tag-item")
-                    .get(0).text();
-            Book book = new Book(bkName, author, bkUrl, "未知", lastUpdateTime, lastChapterName, site,"百度站内搜索");
+            Element infoDiv = item.getElementsByClass("result-game-item-info").first();
+            Elements ps = infoDiv.getElementsByTag("p");
+            String author = ps.get(0).text().replaceAll("作者：|作者:| ", "");
+            String lastUpdateTime = ps.get(2).text().replaceAll("更新时间：|更新时间:| ", "");
+            String lastChapterName = ps.get(3).text().replaceAll("最新章节：|最新章节:| ", "");
+            String imageUrl = item.getElementsByTag("img").get(0).attr("src");
+            Book book = new Book(bkName, author, bkUrl, imageUrl, "未知", lastUpdateTime, lastChapterName, siteName);
             bookList.add(book);
         }
-
         return bookList;
+    }
+
+    public static List<Catalog> parseBqgCatalogs(String catalogHtml, String url){
+        String sub = RegexUtil.regexExcept("<div id=\"list\">", "</div>", catalogHtml).get(0);
+        String ssub = sub.split("正文</dt>")[1];
+        List<String> as = RegexUtil.regexInclude("<a", "</a>", ssub);
+        List<Catalog> list = new ArrayList<>();
+        for (String s : as) {
+            RegexUtil.Tag tag = new RegexUtil.Tag(s);
+            String name = tag.getText();
+            String href = url + tag.getValue("href");
+            list.add(new Catalog(name, href));
+        }
+        return list;
     }
 
     public static List<String> getContentsByBR(String content) {
@@ -63,7 +79,7 @@ public class BookGriper {
         List<String> contents = new ArrayList<>();
         for (String line : lines) {
             if (!line.trim().isEmpty()) {
-                contents.add(line);
+                contents.add(TextUtil.cleanContent(line));
             }
         }
         return contents;
@@ -74,7 +90,7 @@ public class BookGriper {
         for (TextNode textNode : textNodes) {
             String line = textNode.text();
             if (!line.trim().isEmpty()) {
-                contents.add(line);
+                contents.add(TextUtil.cleanContent(line));
             }
         }
         return contents;

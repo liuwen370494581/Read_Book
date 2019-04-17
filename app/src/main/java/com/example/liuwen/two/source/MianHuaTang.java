@@ -2,7 +2,7 @@ package com.example.liuwen.two.source;
 
 import com.example.liuwen.two.Bean.Book;
 import com.example.liuwen.two.Bean.Catalog;
-import com.example.liuwen.two.engine.ChapterSite;
+import com.example.liuwen.two.engine.Site;
 import com.example.liuwen.two.utils.BookGriper;
 import com.example.liuwen.two.utils.NetUtil;
 
@@ -22,7 +22,7 @@ import java.util.List;
  * time   : 2018/11/08 13:56
  * desc   : 棉花糖
  */
-public class MianHuaTang extends ChapterSite {
+public class MianHuaTang  extends Site {
     @Override
     public String getSiteName() {
         return "棉花糖小说";
@@ -42,14 +42,13 @@ public class MianHuaTang extends ChapterSite {
             String lastChapterName = spans.get(2).getElementsByTag("a").first().text();
             String author = spans.get(3).text();
             String lastUpdateTime = spans.get(4).text();
-            bookList.add(new Book(bkName, author, bkUrl, "未知", lastUpdateTime, lastChapterName, this,getSiteName()));
+            bookList.add(new Book(bkName, author, bkUrl, "未知", lastUpdateTime, lastChapterName, getSiteName()));
         }
         return bookList;
     }
 
-
     @Override
-    public List<Catalog> parseCatalog(String catalogHtml, String url) {
+    public List<Catalog> parseCatalog(String catalogHtml, String rootUrl) {
         Elements dds = Jsoup.parse(catalogHtml).getElementsByTag("dd");
         List<Catalog> catalogs = new ArrayList<>();
         for (Element dd : dds) {

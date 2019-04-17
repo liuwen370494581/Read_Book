@@ -2,7 +2,7 @@ package com.example.liuwen.two.source;
 
 import com.example.liuwen.two.Bean.Book;
 import com.example.liuwen.two.Bean.Catalog;
-import com.example.liuwen.two.engine.ChapterSite;
+import com.example.liuwen.two.engine.Site;
 import com.example.liuwen.two.utils.BookGriper;
 import com.example.liuwen.two.utils.NetUtil;
 
@@ -24,7 +24,7 @@ import okhttp3.RequestBody;
  * time   : 2018/11/08 14:00
  * desc   : 极点小说网
  */
-public class JiDian extends ChapterSite {
+public class JiDian  extends Site {
     @Override
     public String getSiteName() {
         return "极点小说网";
@@ -32,7 +32,7 @@ public class JiDian extends ChapterSite {
 
     @Override
     public List<Book> search(String bookName) throws Exception {
-        String url = "https://www.toptxtb.com/modules/article/search.php";
+        String url = "https://www.toptxta.com/modules/article/search.php";
         RequestBody requestBody = new FormBody.Builder()
                 .addEncoded("searchkey", URLEncoder.encode(bookName, "gbk"))
                 .build();
@@ -49,17 +49,16 @@ public class JiDian extends ChapterSite {
             String author = tds.get(2).text();
             String size = tds.get(3).text();
             String lastUpdateTime = tds.get(4).text();
-            bookList.add(new Book(bkName, author, bkUrl, size, lastUpdateTime, lastChapterName, this,getSiteName()));
+            bookList.add(new Book(bkName, author, bkUrl, size, lastUpdateTime, lastChapterName, getSiteName()));
         }
         return bookList;
     }
 
-
     @Override
-    public List<Catalog> parseCatalog(String catalogHtml, String url) {
+    public List<Catalog> parseCatalog(String catalogHtml, String rootUrl) {
         Elements lists = Jsoup.parse(catalogHtml).getElementsByClass("novel_list");
         List<Catalog> catalogs = new ArrayList<>();
-        String root = url.replace("index.html", "");
+        String root = rootUrl.replace("index.html", "");
         for (Element list : lists) {
             Elements as = list.getElementsByTag("a");
             for (Element a : as) {

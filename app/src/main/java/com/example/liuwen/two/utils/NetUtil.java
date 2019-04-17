@@ -17,7 +17,7 @@ import okhttp3.ResponseBody;
  */
 public class NetUtil {
 
-    private static OkHttpClient okHttpClient = new OkHttpClient.Builder()
+    public static OkHttpClient okHttpClient = new OkHttpClient.Builder()
             .readTimeout(10, TimeUnit.SECONDS)
             .connectTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)

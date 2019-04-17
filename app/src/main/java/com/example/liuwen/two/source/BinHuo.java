@@ -2,7 +2,7 @@ package com.example.liuwen.two.source;
 
 import com.example.liuwen.two.Bean.Book;
 import com.example.liuwen.two.Bean.Catalog;
-import com.example.liuwen.two.engine.ChapterSite;
+import com.example.liuwen.two.engine.Site;
 import com.example.liuwen.two.utils.BookGriper;
 import com.example.liuwen.two.utils.NetUtil;
 
@@ -24,22 +24,16 @@ import okhttp3.RequestBody;
  * time   : 2018/11/08 13:57
  * desc   : 冰火中文网数据源
  */
-public class BinHuo extends ChapterSite {
+public class BinHuo  extends Site {
 
-    private static final String root = "https://www.binhuo.com";
-
-
-    @Override
-    public String getSiteName() {
-        return "冰火中文网";
-    }
+    private static final String root = "https://www.bhzw.cc/";
 
     @Override
-    public List<Catalog> parseCatalog(String catalogHtml, String url) {
+    public List<Catalog> parseCatalog(String catalogHtml, String rootUrl) {
         Elements as = Jsoup.parse(catalogHtml).getElementsByClass("float-list fill-block").first().getElementsByTag("a");
         List<Catalog> catalogs = new ArrayList<>();
         for (Element a : as) {
-            String href = url + a.attr("href");
+            String href = rootUrl + a.attr("href");
             String name = a.text();
             catalogs.add(new Catalog(name, href));
         }
@@ -54,7 +48,7 @@ public class BinHuo extends ChapterSite {
 
     @Override
     public List<Book> search(String bookName) throws Exception {
-        String url = "https://www.binhuo.com/modules/article/search.php";
+        String url = "https://www.bhzw.cc/modules/article/search.php";
         RequestBody requestBody = new FormBody.Builder()
                 .addEncoded("searchkey", URLEncoder.encode(bookName, getEncodeType()))
                 .build();
@@ -71,10 +65,14 @@ public class BinHuo extends ChapterSite {
             String author = tr.getElementsByTag("td").get(3).text();
             String size = tr.getElementsByTag("td").get(4).text();
             String lastUpdateTime = tr.getElementsByTag("td").get(5).text();
-            bookList.add(new Book(bkName, author, href, size, lastUpdateTime, lastChapterName, this,getSiteName()));
+            bookList.add(new Book(bkName, author, href, size, lastUpdateTime, lastChapterName, getSiteName()));
         }
         return bookList;
     }
 
+    @Override
+    public String getSiteName() {
+        return "冰火中文";
+    }
 
 }

@@ -4,11 +4,11 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.view.ViewGroup;
+import android.util.Log;
 
 import com.example.liuwen.two.Action.BookAction;
 import com.example.liuwen.two.Action.MyReadHandler;
@@ -20,28 +20,24 @@ import com.example.liuwen.two.EventBus.C;
 import com.example.liuwen.two.EventBus.Event;
 import com.example.liuwen.two.EventBus.EventBusUtil;
 import com.example.liuwen.two.R;
+import com.example.liuwen.two.Rx.Disposable;
+import com.example.liuwen.two.Rx.Subscriber;
 import com.example.liuwen.two.View.DividerItemDecoration;
-import com.example.liuwen.two.View.promptlibrary.PromptDialog;
-import com.example.liuwen.two.engine.Downloader;
-import com.example.liuwen.two.listener.EventListener;
+import com.example.liuwen.two.engine.EasyBook;
+import com.example.liuwen.two.engine.parser.SearchObserver;
 import com.example.liuwen.two.listener.OnHandlerListener;
 import com.example.liuwen.two.utils.DateTimeUtils;
 import com.example.liuwen.two.utils.PromptDialogUtils;
 import com.example.liuwen.two.utils.SneakerUtils;
 import com.example.liuwen.two.utils.ThreadPoolUtils;
-import com.example.liuwen.two.utils.ToastUtils;
-import com.irozon.sneaker.Sneaker;
 import com.liaoinstan.springview.widget.SpringView;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-import GreenDao3.BookDaoHolder;
 import GreenDao3.CatalogDaoHolder;
-import cn.bingoogolapple.androidcommon.adapter.BGAOnRVItemClickListener;
 
 /**
  * author : liuwen
@@ -49,7 +45,7 @@ import cn.bingoogolapple.androidcommon.adapter.BGAOnRVItemClickListener;
  * time   : 2018/11/12 16:45
  * desc   :
  */
-public class SearchResultActivity extends BaseActivity implements EventListener {
+public class SearchResultActivity extends BaseActivity {
 
     private String msg = "信息错误";
     private String bookName;
@@ -57,7 +53,7 @@ public class SearchResultActivity extends BaseActivity implements EventListener 
     private RecyclerView mRecyclerView;
     private SpringView mSpringView;
     private SearchResultAdapter mAdapter;
-    private Downloader mDownLoader;
+    private Disposable searchDisposable;
     private MyReadHandler myReadHandler = new MyReadHandler(this, new OnHandlerListener() {
         @Override
         public void handlerMessage(Message message, WeakReference<Context> reference) {
@@ -115,7 +111,6 @@ public class SearchResultActivity extends BaseActivity implements EventListener 
         bookName = getIntent().getStringExtra("text");
         mRecyclerView = findViewById(R.id.recycler_tv);
         mSpringView = findViewById(R.id.id_spring_view);
-        mDownLoader = new Downloader(this);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -132,10 +127,35 @@ public class SearchResultActivity extends BaseActivity implements EventListener 
     private void searchBookForName() {
         mAdapter.setTitle(bookName);
         PromptDialogUtils.getInstance().showPromptDialog("正在搜索中");
-        ThreadPoolUtils.getInstance().getThreadPool().execute(new Runnable() {
+        searchDisposable = EasyBook.search(bookName).subscribe(new Subscriber<List<Book>>() {
             @Override
-            public void run() {
-                mDownLoader.search(bookName);
+            public void onFinish(@NonNull List<Book> books) {
+                Log.e("MainActivity", books.toString());
+                Message message = Message.obtain();
+                message.what = 0;
+                message.obj = books;
+                myReadHandler.sendMessage(message);
+            }
+
+            @Override
+            public void onError(@NonNull Exception e) {
+                Message message = Message.obtain();
+                message.what = 4;
+                message.obj = msg;
+                myReadHandler.sendMessage(message);
+            }
+
+            @Override
+            public void onMessage(@NonNull String msg) {
+                Message message = Message.obtain();
+                message.what = 1;
+                message.obj = msg;
+                myReadHandler.sendMessage(message);
+            }
+
+            @Override
+            public void onProgress(int progress) {
+
             }
         });
     }
@@ -147,46 +167,5 @@ public class SearchResultActivity extends BaseActivity implements EventListener 
             bundle.putSerializable("bookInfo", mAdapter.getItem(position));
             openActivity(BookInfoActivity.class, bundle);
         });
-    }
-
-    @Override
-    public void onChooseBook(List<Book> books) {
-        Message message = Message.obtain();
-        message.what = 0;
-        message.obj = books;
-        myReadHandler.sendMessage(message);
-
-    }
-
-    @Override
-    public void pushMessage(String msg) {
-        Message message = Message.obtain();
-        message.what = 1;
-        message.obj = msg;
-        myReadHandler.sendMessage(message);
-    }
-
-    @Override
-    public void onDownload(int progress, String msg) {
-        Message message = Message.obtain();
-        message.what = 2;
-        message.obj = msg;
-        myReadHandler.sendMessage(message);
-    }
-
-    @Override
-    public void onEnd(String msg, File file) {
-        Message message = Message.obtain();
-        message.what = 3;
-        message.obj = msg;
-        myReadHandler.sendMessage(message);
-    }
-
-    @Override
-    public void onError(String msg, Exception e) {
-        Message message = Message.obtain();
-        message.what = 4;
-        message.obj = msg;
-        myReadHandler.sendMessage(message);
     }
 }

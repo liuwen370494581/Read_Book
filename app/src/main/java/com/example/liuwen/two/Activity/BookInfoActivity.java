@@ -1,12 +1,9 @@
 package com.example.liuwen.two.Activity;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,9 +19,6 @@ import com.example.liuwen.two.EventBus.C;
 import com.example.liuwen.two.EventBus.Event;
 import com.example.liuwen.two.EventBus.EventBusUtil;
 import com.example.liuwen.two.R;
-import com.example.liuwen.two.engine.ChapterSite;
-import com.example.liuwen.two.listener.EventListener;
-import com.example.liuwen.two.listener.OnHandlerListener;
 import com.example.liuwen.two.utils.DateTimeUtils;
 import com.example.liuwen.two.utils.GlideUtils;
 import com.example.liuwen.two.utils.NetUtil;
@@ -32,15 +26,11 @@ import com.example.liuwen.two.utils.PromptDialogUtils;
 import com.example.liuwen.two.utils.SneakerUtils;
 import com.example.liuwen.two.utils.ThreadPoolUtils;
 
-import java.io.File;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import GreenDao3.BookDaoHolder;
-import GreenDao3.CatalogDaoHolder;
-import cn.bingoogolapple.androidcommon.adapter.BGAOnRVItemClickListener;
 
 /**
  * author : liuwen
@@ -58,6 +48,7 @@ public class BookInfoActivity extends BaseActivity {
     private String mStrAsc = "正序";
     private ChapterAdapter mAdapter;
     private List<Catalog> mCatalogList = new ArrayList<>();
+
     private MyReadHandler myReadHandler = new MyReadHandler(getActivityContext(), (message, reference) -> {
         BookInfoActivity activity = (BookInfoActivity) reference.get();
         if (activity != null) {
@@ -118,26 +109,25 @@ public class BookInfoActivity extends BaseActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivityContext()));
         mRecyclerView.setAdapter(mAdapter);
         searchBookChapter();
-
     }
 
     private void searchBookChapter() {
         PromptDialogUtils.getInstance().showPromptDialog("加载目录中");
         Message message = Message.obtain();
-        ThreadPoolUtils.getInstance().getThreadPool().execute(() -> {
-            try {
-                ChapterSite site = (ChapterSite) mCurrentBook.getSite();
-                String html = NetUtil.getHtml(mCurrentBook.getUrl(), "gbk");
-                message.what = 0;
-                message.obj = site.parseCatalog(html, mCurrentBook.getUrl());
-                myReadHandler.sendMessage(message);
-            } catch (IOException e) {
-                e.printStackTrace();
-                message.what = 1;
-                myReadHandler.sendMessage(message);
-            }
-
-        });
+//        ThreadPoolUtils.getInstance().getThreadPool().execute(() -> {
+//            try {
+//                ChapterSite site = (ChapterSite) mCurrentBook.getSite();
+//                String html = NetUtil.getHtml(mCurrentBook.getUrl(), "gbk");
+//                message.what = 0;
+//                message.obj = site.parseCatalog(html, mCurrentBook.getUrl());
+//                myReadHandler.sendMessage(message);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                message.what = 1;
+//                myReadHandler.sendMessage(message);
+//            }
+//
+//        });
     }
 
     @Override
@@ -165,15 +155,15 @@ public class BookInfoActivity extends BaseActivity {
             }
         });
 
-        //添加到书架
-        btnAddBook.setOnClickListener(v -> {
-            BookDaoHolder.insert(new Book(BookDaoHolder.getCount(), mCurrentBook.getBookName(),
-                    mCurrentBook.getAuthor(), mCurrentBook.getUrl(), mCurrentBook.getChapterSize(),
-                    mCurrentBook.getLastUpdateTime(), mCurrentBook.getLastChapterName(),
-                    mCurrentBook.getSource(), DateTimeUtils.getCurrentTimeExactToSecond()));
-            btnAddBook.setText("已添加");
-            EventBusUtil.sendEvent(new Event(C.EventCode.AddBookShelf));
-        });
+//        //添加到书架
+//        btnAddBook.setOnClickListener(v -> {
+//            BookDaoHolder.insert(new Book(BookDaoHolder.getCount(), mCurrentBook.getBookName(),
+//                    mCurrentBook.getAuthor(), mCurrentBook.getUrl(), mCurrentBook.getChapterSize(),
+//                    mCurrentBook.getLastUpdateTime(), mCurrentBook.getLastChapterName(),
+//                    mCurrentBook.getSource(), DateTimeUtils.getCurrentTimeExactToSecond()));
+//            btnAddBook.setText("已添加");
+//            EventBusUtil.sendEvent(new Event(C.EventCode.AddBookShelf));
+//        });
 
         //开始阅读
         btnBookRead.setOnClickListener(v -> {

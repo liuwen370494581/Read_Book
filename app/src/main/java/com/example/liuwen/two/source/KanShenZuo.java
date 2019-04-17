@@ -1,11 +1,8 @@
 package com.example.liuwen.two.source;
 
-import android.os.Build;
-import android.support.annotation.RequiresApi;
-
 import com.example.liuwen.two.Bean.Book;
 import com.example.liuwen.two.Bean.Catalog;
-import com.example.liuwen.two.engine.ChapterSite;
+import com.example.liuwen.two.engine.Site;
 import com.example.liuwen.two.utils.BookGriper;
 import com.example.liuwen.two.utils.NetUtil;
 import com.example.liuwen.two.utils.RegexUtil;
@@ -28,18 +25,13 @@ import okhttp3.RequestBody;
  * time   : 2018/11/08 13:53
  * desc   :看神作 http://www.kanshenzuo.com 书挺全的，更新也比较及时 测试约500k/s
  */
-public class KanShenZuo  extends ChapterSite {
+public class KanShenZuo  extends Site {
 
     private static final String root = "http://www.kanshenzuo.com";
 
     @Override
     public String getSiteName() {
         return "看神作";
-    }
-
-    @Override
-    public int getThreadCount() {
-        return 150;
     }
 
     @Override
@@ -68,25 +60,24 @@ public class KanShenZuo  extends ChapterSite {
             String author = tds.get(2).text();
             String size = tds.get(3).text();
             String lastUpdateTime = tds.get(4).text();
-            Book book = new Book(bkName, author, bkUrl, size, lastUpdateTime, lastChapterName, this,getSiteName());
+            Book book = new Book(bkName, author, bkUrl, size, lastUpdateTime, lastChapterName, getSiteName());
             bookList.add(book);
         }
         return bookList;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
-    public List<Catalog> parseCatalog(String catalogHtml, String url) {
+    public List<Catalog> parseCatalog(String catalogHtml, String rootUrl) {
         String sub = RegexUtil.regexExcept("<div id=\"list\">", "</div>", catalogHtml).get(0);
         String ssub = sub.split("正文</dt>")[1];
         List<String> as = RegexUtil.regexInclude("<a", "</a>", ssub);
         List<Catalog> list = new ArrayList<>();
-        as.forEach(s -> {
+        for (String s : as) {
             RegexUtil.Tag tag = new RegexUtil.Tag(s);
             String name = tag.getText();
             String href = root + tag.getValue("href");
             list.add(new Catalog(name, href));
-        });
+        }
         return list;
     }
 

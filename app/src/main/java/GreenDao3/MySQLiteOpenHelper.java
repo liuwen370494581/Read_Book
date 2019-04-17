@@ -30,6 +30,6 @@ public class MySQLiteOpenHelper extends DaoMaster.OpenHelper {
         //  MigrationHelper.getInstance().migrate(db, TestDao.class);
         //如果要升级的时候 在改变version号即可
        //MigrationHelper.getInstance().migrate(db, UserModelDao.class);
-       // MigrationHelper.getInstance().migrate(db, CoverModelDao.class);
+        MigrationHelper.getInstance().migrate(db, BookDao.class);
     }
 }

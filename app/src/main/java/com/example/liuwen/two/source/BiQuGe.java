@@ -2,7 +2,7 @@ package com.example.liuwen.two.source;
 
 import com.example.liuwen.two.Bean.Book;
 import com.example.liuwen.two.Bean.Catalog;
-import com.example.liuwen.two.engine.ChapterSite;
+import com.example.liuwen.two.engine.Site;
 import com.example.liuwen.two.utils.BookGriper;
 import com.example.liuwen.two.utils.NetUtil;
 import com.example.liuwen.two.utils.RegexUtil;
@@ -20,7 +20,8 @@ import java.util.List;
  * time   : 2018/11/08 13:48
  * desc   :笔趣阁数据源
  */
-public class BiQuGe extends ChapterSite {
+public class BiQuGe extends Site {
+
     private final static String root = "http://www.biquge.com.tw";
 
     @Override
@@ -41,7 +42,7 @@ public class BiQuGe extends ChapterSite {
             String author = new RegexUtil.Tag(ps.get(0)).getText().replaceAll("作者|：", "");
             String lastChapterName = RegexUtil.regexExcept("\">", "</a>", ps.get(3)).get(0);
             String lastUpdateTime = new RegexUtil.Tag(ps.get(2)).getText();
-            Book book = new Book(bookName, author, url, "未知", lastUpdateTime, lastChapterName, this,getSiteName());
+            Book book = new Book(bookName, author, url, "未知", lastUpdateTime, lastChapterName, getSiteName());
             return Collections.singletonList(book);
         } else {
             List<String> trs = RegexUtil.regexExcept("<tr", "</tr>", html);
@@ -60,7 +61,7 @@ public class BiQuGe extends ChapterSite {
                 String author = new RegexUtil.Tag(tds.get(2)).getText();
                 String size = new RegexUtil.Tag(tds.get(3)).getText();
                 String lastUpdateTime = new RegexUtil.Tag(tds.get(4)).getText();
-                Book book = new Book(bkName, author, bkUrl, size, lastUpdateTime, lastChapterName, this,getSiteName());
+                Book book = new Book(bkName, author, bkUrl, size, lastUpdateTime, lastChapterName, getSiteName());
                 bookList.add(book);
             }
             return bookList;
@@ -68,7 +69,7 @@ public class BiQuGe extends ChapterSite {
     }
 
     @Override
-    public List<Catalog> parseCatalog(String catalogHtml, String url) {
+    public List<Catalog> parseCatalog(String catalogHtml, String rootUrl) {
         List<String> as = RegexUtil.regexExcept("<dd>", "</dd>", catalogHtml);
         List<Catalog> catalogs = new ArrayList<>();
         for (String a : as) {
