@@ -46,6 +46,9 @@
         </LinearLayout>
     </ScrollView>
 
+
+
+
     <FrameLayout
         android:id="@+id/preview_controlLayout"
         android:layout_width="match_parent"

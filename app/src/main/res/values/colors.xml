@@ -22,4 +22,6 @@
     <color name="preview_theme_white">#EEE6CB</color>
     <color name="preview_theme_dark">#0B0B0A</color>
     <color name="previewShadow">#de0d0d0d</color>
+
+    <color name="blue_light">#02A8F3</color>
 </resources>

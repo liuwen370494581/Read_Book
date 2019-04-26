@@ -43,7 +43,7 @@ import GreenDao3.CatalogDaoHolder;
  * author : liuwen
  * e-mail : liuwen370494581@163.com
  * time   : 2018/11/12 16:45
- * desc   :
+ * desc   : 书籍搜索结果页面
  */
 public class SearchResultActivity extends BaseActivity {
 
@@ -54,50 +54,6 @@ public class SearchResultActivity extends BaseActivity {
     private SpringView mSpringView;
     private SearchResultAdapter mAdapter;
     private Disposable searchDisposable;
-    private MyReadHandler myReadHandler = new MyReadHandler(this, new OnHandlerListener() {
-        @Override
-        public void handlerMessage(Message message, WeakReference<Context> reference) {
-            SearchResultActivity activity = (SearchResultActivity) reference.get();
-            if (activity != null) {
-                switch (message.what) {
-                    case 0:
-                        PromptDialogUtils.getInstance().hidePromptDialog();
-                        //获取成功
-                        mSearchBooks = (List<Book>) message.obj;
-                        if (mSearchBooks != null) {
-                            activity.mAdapter.setData(mSearchBooks);
-                        }
-                        if (BookAction.isSameBooK(activity.bookName)) {
-                            Catalog catalog = BookAction.backCatalogHistory(bookName);
-                            catalog.setUrl(DateTimeUtils.getCurrentTimeExactToSecond());
-                            CatalogDaoHolder.update(catalog);
-                        } else {
-                            CatalogDaoHolder.insert(new Catalog(CatalogDaoHolder.getCount(), activity.bookName, DateTimeUtils.getCurrentTimeExactToSecond(), 0));
-                        }
-                        EventBusUtil.sendEvent(new Event(C.EventCode.BookHistory));
-                        break;
-                    case 1:
-                        String msg = (String) message.obj;
-                        if (msg != null) {
-                            SneakerUtils.setCommonMessage(activity, "正在搜索书籍来源", msg);
-                        }
-                        break;
-                    case 2:
-                        break;
-                    case 3:
-                        break;
-                    case 4:
-                        String errMsg = (String) message.obj;
-                        if (errMsg != null) {
-                            SneakerUtils.setOtherMessage(activity, "错误信息反馈", errMsg, R.color.red, R.drawable.ic_error);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-    });
 
     @Override
     protected int setLayoutRes() {
@@ -118,7 +74,6 @@ public class SearchResultActivity extends BaseActivity {
     protected void initData() {
         mAdapter = new SearchResultAdapter(mRecyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivityContext()));
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivityContext()));
         mRecyclerView.setAdapter(mAdapter);
         searchBookForName();
     }
@@ -130,27 +85,30 @@ public class SearchResultActivity extends BaseActivity {
         searchDisposable = EasyBook.search(bookName).subscribe(new Subscriber<List<Book>>() {
             @Override
             public void onFinish(@NonNull List<Book> books) {
-                Log.e("MainActivity", books.toString());
-                Message message = Message.obtain();
-                message.what = 0;
-                message.obj = books;
-                myReadHandler.sendMessage(message);
+                PromptDialogUtils.getInstance().hidePromptDialog();
+                //获取成功
+                if (books.size() > 0) {
+                    mSearchBooks = books;
+                    mAdapter.setData(mSearchBooks);
+                    if (BookAction.isSameBooK(bookName)) {
+                        Catalog catalog = BookAction.backCatalogHistory(bookName);
+                        catalog.setUrl(DateTimeUtils.getCurrentTimeExactToSecond());
+                        CatalogDaoHolder.update(catalog);
+                    } else {
+                        CatalogDaoHolder.insert(new Catalog(CatalogDaoHolder.getCount(), bookName, DateTimeUtils.getCurrentTimeExactToSecond(), 0));
+                    }
+                    EventBusUtil.sendEvent(new Event(C.EventCode.BookHistory));
+                }
             }
 
             @Override
             public void onError(@NonNull Exception e) {
-                Message message = Message.obtain();
-                message.what = 4;
-                message.obj = msg;
-                myReadHandler.sendMessage(message);
+                SneakerUtils.setOtherMessage(SearchResultActivity.this, "错误信息反馈", e.getMessage(), R.color.red, R.drawable.ic_error);
             }
 
             @Override
             public void onMessage(@NonNull String msg) {
-                Message message = Message.obtain();
-                message.what = 1;
-                message.obj = msg;
-                myReadHandler.sendMessage(message);
+                SneakerUtils.setCommonMessage(SearchResultActivity.this, "正在搜索书籍来源", msg);
             }
 
             @Override
@@ -167,5 +125,11 @@ public class SearchResultActivity extends BaseActivity {
             bundle.putSerializable("bookInfo", mAdapter.getItem(position));
             openActivity(BookInfoActivity.class, bundle);
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        searchDisposable.dispose();
     }
 }

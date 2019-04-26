@@ -1,4 +1,5 @@
 package com.example.liuwen.two.Bean;
+
 import com.example.liuwen.two.engine.Site;
 import com.example.liuwen.two.engine.SiteCollection;
 
@@ -27,7 +28,6 @@ public class Book implements Serializable {
     private String chapterSize = "未知";
     private String lastUpdateTime = "未知";
     private String lastChapterName = "未知";
-    private String source;
     private String siteName;
     private String addBookTime;//添加到书架的时间 用来排序
 
@@ -63,9 +63,9 @@ public class Book implements Serializable {
     }
 
 
-    @Generated(hash = 737918271)
+    @Generated(hash = 1368846132)
     public Book(Long id, String bookName, String author, String url, String imageUrl, String chapterSize, String lastUpdateTime, String lastChapterName,
-            String source, String siteName, String addBookTime) {
+            String siteName, String addBookTime) {
         this.id = id;
         this.bookName = bookName;
         this.author = author;
@@ -74,10 +74,11 @@ public class Book implements Serializable {
         this.chapterSize = chapterSize;
         this.lastUpdateTime = lastUpdateTime;
         this.lastChapterName = lastChapterName;
-        this.source = source;
         this.siteName = siteName;
         this.addBookTime = addBookTime;
     }
+
+
 
     public String getImageUrl() {
         return imageUrl;
@@ -93,14 +94,6 @@ public class Book implements Serializable {
 
     public void setSiteName(String siteName) {
         this.siteName = siteName;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
     }
 
     public String getBookName() {

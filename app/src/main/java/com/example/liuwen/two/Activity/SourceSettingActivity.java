@@ -1,6 +1,5 @@
 package com.example.liuwen.two.Activity;
 
-import android.graphics.Typeface;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -15,6 +14,7 @@ import com.irozon.sneaker.Sneaker;
  * desc   :
  */
 public class SourceSettingActivity extends BaseActivity {
+
     @Override
     protected int setLayoutRes() {
         return R.layout.activity_source_setting;
@@ -24,6 +24,7 @@ public class SourceSettingActivity extends BaseActivity {
     protected void initView() {
         showLeftView();
         setCenterText("书源");
+
 
     }
 

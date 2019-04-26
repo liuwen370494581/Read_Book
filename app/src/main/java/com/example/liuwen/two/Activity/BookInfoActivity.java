@@ -2,6 +2,7 @@ package com.example.liuwen.two.Activity;
 
 import android.os.Bundle;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Button;
@@ -12,6 +13,7 @@ import com.example.liuwen.two.Action.BookAction;
 import com.example.liuwen.two.Action.CatalogsHolder;
 import com.example.liuwen.two.Action.MyReadHandler;
 import com.example.liuwen.two.Adapter.ChapterAdapter;
+import com.example.liuwen.two.Base.AppInfo;
 import com.example.liuwen.two.Base.BaseActivity;
 import com.example.liuwen.two.Bean.Book;
 import com.example.liuwen.two.Bean.Catalog;
@@ -19,6 +21,9 @@ import com.example.liuwen.two.EventBus.C;
 import com.example.liuwen.two.EventBus.Event;
 import com.example.liuwen.two.EventBus.EventBusUtil;
 import com.example.liuwen.two.R;
+import com.example.liuwen.two.Rx.Disposable;
+import com.example.liuwen.two.Rx.Subscriber;
+import com.example.liuwen.two.engine.EasyBook;
 import com.example.liuwen.two.utils.DateTimeUtils;
 import com.example.liuwen.two.utils.GlideUtils;
 import com.example.liuwen.two.utils.NetUtil;
@@ -48,25 +53,7 @@ public class BookInfoActivity extends BaseActivity {
     private String mStrAsc = "正序";
     private ChapterAdapter mAdapter;
     private List<Catalog> mCatalogList = new ArrayList<>();
-
-    private MyReadHandler myReadHandler = new MyReadHandler(getActivityContext(), (message, reference) -> {
-        BookInfoActivity activity = (BookInfoActivity) reference.get();
-        if (activity != null) {
-            switch (message.what) {
-                case 0:
-                    PromptDialogUtils.getInstance().hidePromptDialog();
-                    activity.mCatalogList = (List<Catalog>) message.obj;
-                    activity.mAdapter.setData(activity.mCatalogList);
-                    break;
-                case 1:
-                    PromptDialogUtils.getInstance().hidePromptDialog();
-                    SneakerUtils.setOtherMessage(activity, "获取结果", "获取目录失败", R.color.red, R.drawable.ic_error);
-                default:
-                    break;
-            }
-        }
-    });
-
+    private Disposable CatalogDisposable;
 
     @Override
     protected int setLayoutRes() {
@@ -93,12 +80,12 @@ public class BookInfoActivity extends BaseActivity {
     protected void initData() {
         mCurrentBook = (Book) getIntent().getSerializableExtra("bookInfo");
         if (mCurrentBook != null) {
-            GlideUtils.loadImage(ivBookCover, mCurrentBook.getUrl(), R.mipmap.ic_default_cover, R.mipmap.ic_default_cover);
+            GlideUtils.loadImage(ivBookCover, mCurrentBook.getImageUrl(), R.mipmap.ic_default_cover, R.mipmap.ic_default_cover);
             tvBookTitle.setText(mCurrentBook.getBookName());
             tvBookAuthor.setText(mCurrentBook.getAuthor());
             tvBookUpdateTime.setText("最后更新：" + mCurrentBook.getLastUpdateTime());
             tvBookNewChapter.setText("最新章节：" + mCurrentBook.getLastChapterName());
-            tvBookSource.setText("来源：" + mCurrentBook.getSource());
+            tvBookSource.setText("来源：" + mCurrentBook.getSiteName());
             if (BookAction.isSameBookFormBookBean(mCurrentBook.getBookName())) {
                 btnAddBook.setText("已添加");
             } else {
@@ -113,21 +100,31 @@ public class BookInfoActivity extends BaseActivity {
 
     private void searchBookChapter() {
         PromptDialogUtils.getInstance().showPromptDialog("加载目录中");
-        Message message = Message.obtain();
-//        ThreadPoolUtils.getInstance().getThreadPool().execute(() -> {
-//            try {
-//                ChapterSite site = (ChapterSite) mCurrentBook.getSite();
-//                String html = NetUtil.getHtml(mCurrentBook.getUrl(), "gbk");
-//                message.what = 0;
-//                message.obj = site.parseCatalog(html, mCurrentBook.getUrl());
-//                myReadHandler.sendMessage(message);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                message.what = 1;
-//                myReadHandler.sendMessage(message);
-//            }
-//
-//        });
+        CatalogDisposable = EasyBook.getCatalog(mCurrentBook).subscribe(new Subscriber<List<Catalog>>() {
+            @Override
+            public void onFinish(@NonNull List<Catalog> catalogs) {
+                PromptDialogUtils.getInstance().hidePromptDialog();
+                mCatalogList = catalogs;
+                mAdapter.setData(mCatalogList);
+            }
+
+            @Override
+            public void onError(@NonNull Exception e) {
+                PromptDialogUtils.getInstance().hidePromptDialog();
+                SneakerUtils.setOtherMessage(BookInfoActivity.this, "获取结果", "获取目录失败", R.color.red, R.drawable.ic_error);
+            }
+
+            @Override
+            public void onMessage(@NonNull String msg) {
+
+
+            }
+
+            @Override
+            public void onProgress(int progress) {
+
+            }
+        });
     }
 
     @Override
@@ -173,5 +170,11 @@ public class BookInfoActivity extends BaseActivity {
             bundle.putInt("position", 0);//从第一章开始阅读
             openActivity(ReadBookActivity.class, bundle);
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        CatalogDisposable.dispose();
     }
 }

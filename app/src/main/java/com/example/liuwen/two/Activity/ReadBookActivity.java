@@ -1,6 +1,7 @@
 package com.example.liuwen.two.Activity;
 
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -13,7 +14,12 @@ import com.example.liuwen.two.Action.MyReadHandler;
 import com.example.liuwen.two.Base.BaseActivity;
 import com.example.liuwen.two.Bean.Book;
 import com.example.liuwen.two.Bean.Catalog;
+import com.example.liuwen.two.Bean.Chapter;
 import com.example.liuwen.two.R;
+import com.example.liuwen.two.Rx.Disposable;
+import com.example.liuwen.two.Rx.Subscriber;
+import com.example.liuwen.two.engine.EasyBook;
+import com.example.liuwen.two.engine.TxtParser;
 import com.example.liuwen.two.utils.NetUtil;
 import com.example.liuwen.two.utils.PromptDialogUtils;
 import com.example.liuwen.two.utils.TextUtil;
@@ -31,7 +37,6 @@ import java.util.List;
  * desc   : 阅读小说的新界面
  */
 public class ReadBookActivity extends BaseActivity {
-
     private List<Catalog> catalogs = new ArrayList<>();
     private String loading = "加载中";
     private Book mCurrentBook;
@@ -41,28 +46,8 @@ public class ReadBookActivity extends BaseActivity {
     private boolean isShowControl = true;
     private TextView mTvTryAgain, mTvChapterTitle;
     private ImageView imgBack;
-
-    private MyReadHandler myReadHandler = new MyReadHandler(getActivityContext(), (message, reference) -> {
-        ReadBookActivity activity = (ReadBookActivity) reference.get();
-        if (activity != null) {
-            switch (message.what) {
-                case 0:
-                    PromptDialogUtils.getInstance().hidePromptDialog();
-                    String content = (String) message.obj;
-                    activity.mTvContent.setText(content);
-                    activity.mTvTryAgain.setVisibility(View.GONE);
-                    break;
-                case 1:
-                    PromptDialogUtils.getInstance().hidePromptDialog();
-                    activity.mTvContent.setText("");
-                    activity.mTvTryAgain.setVisibility(View.VISIBLE);
-                    break;
-                default:
-                    break;
-            }
-        }
-    });
-
+    private Disposable mDisposable;
+    private TxtParser mTxtParser = new TxtParser();//解析
 
     @Override
     protected int setLayoutRes() {
@@ -86,38 +71,41 @@ public class ReadBookActivity extends BaseActivity {
     }
 
     private void loadCatalog() {
-//        PromptDialogUtils.getInstance().showPromptDialog("正在加载内容中");
-//        Catalog catalog = catalogs.get(position);
-//        ThreadPoolUtils.getInstance().getThreadPool().execute(() -> {
-//            try {
-//                String html = NetUtil.getHtml(catalog.getUrl(), mSite.getEncodeType());
-//                List<String> content = mSite.parseContent(html);
-//                StringBuilder stringBuilder = new StringBuilder();
-//                stringBuilder.append(catalog.getChapterName()).append("\n\n");
-//                for (String line : content) {
-//                    if (!line.isEmpty()) {
-//                        stringBuilder.append("      ").append(TextUtil.cleanContent(line)).append("\n\n");
-//                    }
-//                }
-//                Message message = Message.obtain();
-//                message.what = 0;
-//                message.obj = stringBuilder.toString();
-//                myReadHandler.sendMessage(message);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                myReadHandler.sendEmptyMessage(1);
-//            } finally {
-//                //关闭线程池
-//                ThreadPoolUtils.getInstance().getThreadPool().shutdown();
-//            }
-//        });
+        PromptDialogUtils.getInstance().showPromptDialog("正在加载内容中");
+        Catalog catalog = catalogs.get(position);
+        mDisposable = EasyBook.getContent(mCurrentBook, catalog).subscribe(new Subscriber<List<String>>() {
+            @Override
+            public void onFinish(@NonNull List<String> strings) {
+                PromptDialogUtils.getInstance().hidePromptDialog();
+                Chapter character = new Chapter(catalog.getChapterName(), catalog.getIndex(), strings);
+                mTvContent.setText(mTxtParser.parseContent(character));
+                mTvTryAgain.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError(@NonNull Exception e) {
+                PromptDialogUtils.getInstance().hidePromptDialog();
+                mTvContent.setText("");
+                mTvTryAgain.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onMessage(@NonNull String message) {
+
+            }
+
+            @Override
+            public void onProgress(int progress) {
+
+            }
+        });
     }
 
     /**
      * 加载下一章
      */
     private void toNextChapter() {
-        int p = position - 1;
+        int p = position;
         if (p >= 0) {
             position = p;
             mTvContent.setText(loading);
@@ -181,5 +169,11 @@ public class ReadBookActivity extends BaseActivity {
         });
 
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDisposable.dispose();
     }
 }

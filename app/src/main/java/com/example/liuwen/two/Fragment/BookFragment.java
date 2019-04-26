@@ -40,8 +40,6 @@ import cn.bingoogolapple.androidcommon.adapter.BGAOnRVItemClickListener;
  */
 @BindEventBus
 public class BookFragment extends BaseFragment {
-
-
     private List<Book> mBookList = new ArrayList<>();
     private SpringView mSpringView;
     private RecyclerView mRecyclerView;

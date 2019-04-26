@@ -44,10 +44,10 @@ public class SearchResultAdapter extends BGARecyclerViewAdapter<Book> {
         TextView tvSource = helper.getTextView(R.id.tv_search_item_source);
         tvTitle.setText(changeTxtColor(model.getBookName(), title, 0xFFF08080));
         tvAuthor.setText(changeTxtColor(model.getAuthor(), title, 0xFFF08080));
-        tvSource.setText("来源：" + model.getSource());
+        tvSource.setText("来源：" + model.getSiteName());
         tvUpdateContent.setText("最新章节：" + model.getLastChapterName());
         tvUpdateTime.setText("最新更新时间：" + model.getLastUpdateTime());
-        GlideUtils.loadImage(imageView, model.getUrl(), R.mipmap.ic_default_cover, R.mipmap.ic_default_cover);
+        GlideUtils.loadImage(imageView, model.getImageUrl(), R.mipmap.ic_default_cover, R.mipmap.ic_default_cover);
     }
 
     private SpannableString changeTxtColor(String content, String splitText, int color) {
