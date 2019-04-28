@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.example.liuwen.two.Action.BookAction;
 import com.example.liuwen.two.Action.CatalogsHolder;
 import com.example.liuwen.two.Action.MyReadHandler;
@@ -17,6 +16,7 @@ import com.example.liuwen.two.Base.AppInfo;
 import com.example.liuwen.two.Base.BaseActivity;
 import com.example.liuwen.two.Bean.Book;
 import com.example.liuwen.two.Bean.Catalog;
+import com.example.liuwen.two.Bean.Chapter;
 import com.example.liuwen.two.EventBus.C;
 import com.example.liuwen.two.EventBus.Event;
 import com.example.liuwen.two.EventBus.EventBusUtil;
@@ -24,12 +24,11 @@ import com.example.liuwen.two.R;
 import com.example.liuwen.two.Rx.Disposable;
 import com.example.liuwen.two.Rx.Subscriber;
 import com.example.liuwen.two.engine.EasyBook;
+import com.example.liuwen.two.engine.TxtParser;
 import com.example.liuwen.two.utils.DateTimeUtils;
 import com.example.liuwen.two.utils.GlideUtils;
-import com.example.liuwen.two.utils.NetUtil;
 import com.example.liuwen.two.utils.PromptDialogUtils;
 import com.example.liuwen.two.utils.SneakerUtils;
-import com.example.liuwen.two.utils.ThreadPoolUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,6 +53,7 @@ public class BookInfoActivity extends BaseActivity {
     private ChapterAdapter mAdapter;
     private List<Catalog> mCatalogList = new ArrayList<>();
     private Disposable CatalogDisposable;
+    private TxtParser mTxtParser = new TxtParser();//解析
 
     @Override
     protected int setLayoutRes() {
@@ -148,7 +148,7 @@ public class BookInfoActivity extends BaseActivity {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("book", mCurrentBook);
                 bundle.putInt("position", position);
-                openActivity(ReadBookActivity.class, bundle);
+                openActivity(newReadBookActivity.class, bundle);
             }
         });
 
@@ -168,7 +168,8 @@ public class BookInfoActivity extends BaseActivity {
             Bundle bundle = new Bundle();
             bundle.putSerializable("book", mCurrentBook);
             bundle.putInt("position", 0);//从第一章开始阅读
-            openActivity(ReadBookActivity.class, bundle);
+            openActivity(newReadBookActivity.class, bundle);
+
         });
     }
 

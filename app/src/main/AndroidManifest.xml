@@ -26,6 +26,7 @@
         <activity android:name=".Activity.SearchResultActivity" />
         <activity android:name=".Activity.BookInfoActivity" />
         <activity android:name=".Activity.ReadBookActivity" />
+        <activity android:name=".Activity.newReadBookActivity" />
     </application>
 
 </manifest>
