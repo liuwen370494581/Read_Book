@@ -11,7 +11,7 @@ public class Builder {
     private static Builder defaultBuilder;
     private static Builder alertDefaultBuilder;
     int backColor = Color.BLACK;
-    int backAlpha = 90;
+    int backAlpha = 0;//这个改变背景颜色的
     int textColor = Color.WHITE;
     float textSize = 14;
     float padding = 15;
@@ -26,23 +26,23 @@ public class Builder {
     String text;
     long loadingDuration;
 
-    int sheetPressAlph=15;
-    int sheetCellHeight=48;
-    int sheetCellPad=13;
+    int sheetPressAlph = 15;
+    int sheetCellHeight = 48;
+    int sheetCellPad = 13;
 
-    public Builder sheetCellPad(int pad){
-        this.sheetCellPad=pad;
+    public Builder sheetCellPad(int pad) {
+        this.sheetCellPad = pad;
         return this;
     }
 
-    public Builder sheetCellHeight(int height){
-        this.sheetCellHeight=height;
+    public Builder sheetCellHeight(int height) {
+        this.sheetCellHeight = height;
         return this;
     }
 
 
-    public Builder sheetPressAlph(int alpha){
-        this.sheetPressAlph=alpha;
+    public Builder sheetPressAlph(int alpha) {
+        this.sheetPressAlph = alpha;
         return this;
     }
 

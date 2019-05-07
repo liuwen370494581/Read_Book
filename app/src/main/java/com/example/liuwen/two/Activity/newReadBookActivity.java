@@ -28,6 +28,7 @@ import com.example.liuwen.two.View.BookView.interfaces.ICenterAreaClickListener;
 import com.example.liuwen.two.View.BookView.interfaces.IChapter;
 import com.example.liuwen.two.View.BookView.interfaces.ILoadListener;
 import com.example.liuwen.two.View.BookView.interfaces.IPageChangeListener;
+import com.example.liuwen.two.View.BookView.interfaces.IPageEdgeListener;
 import com.example.liuwen.two.View.BookView.interfaces.ISliderListener;
 import com.example.liuwen.two.View.BookView.interfaces.ITextSelectListener;
 import com.example.liuwen.two.View.BookView.main.TxtConfig;
@@ -36,6 +37,7 @@ import com.example.liuwen.two.View.ChapterList;
 import com.example.liuwen.two.engine.EasyBook;
 import com.example.liuwen.two.engine.TxtParser;
 import com.example.liuwen.two.utils.PromptDialogUtils;
+import com.example.liuwen.two.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +99,6 @@ public class newReadBookActivity extends BaseActivity {
         mBottomDecoration = findViewById(R.id.activity_hwtxtplay_bottom);
         mTxtReaderView = (TxtReaderView) findViewById(R.id.activity_hwtxtplay_readerView);
         mChapterNameText = (TextView) findViewById(R.id.activity_hwtxtplay_chaptername);
-        mChapterMenuText = (TextView) findViewById(R.id.activity_hwtxtplay_chapter_menutext);
         mProgressText = (TextView) findViewById(R.id.activity_hwtxtplay_progress_text);
         mSettingText = (TextView) findViewById(R.id.activity_hwtxtplay_setting_text);
         mTopMenu = findViewById(R.id.activity_hwtxtplay_menu_top);
@@ -133,13 +134,13 @@ public class newReadBookActivity extends BaseActivity {
         mCurrentBook = (Book) getIntent().getSerializableExtra("book");
         position = getIntent().getIntExtra("position", 0);
         if (mCurrentBook != null) {
+            PromptDialogUtils.getInstance().showPromptDialog("正在加载内容中");
+            loadCatalog();
         }
-        loadCatalog();
     }
 
 
     private void loadCatalog() {
-        PromptDialogUtils.getInstance().showPromptDialog("正在加载内容中");
         Catalog catalog = catalogs.get(position);
         mDisposable = EasyBook.getContent(mCurrentBook, catalog).subscribe(new Subscriber<List<String>>() {
             @Override
@@ -149,6 +150,7 @@ public class newReadBookActivity extends BaseActivity {
                 mTxtReadView.loadText(mTxtParser.parseContent(character), new ILoadListener() {
                     @Override
                     public void onSuccess() {
+                        mChapterNameText.setText(catalog.getChapterName());
                         initWhenLoadDone();
                     }
 
@@ -217,8 +219,6 @@ public class newReadBookActivity extends BaseActivity {
                 }
             });
             mChapterListPop.setBackGroundColor(mTxtReaderView.getBackgroundColor());
-        } else {
-            Gone(mChapterMenuText);
         }
     }
 
@@ -245,12 +245,7 @@ public class newReadBookActivity extends BaseActivity {
 
     @Override
     protected void setListener() {
-        mSettingText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Show(mTopMenu, mBottomMenu, mCoverView);
-            }
-        });
+        mSettingText.setOnClickListener(view -> Show(mTopMenu, mBottomMenu, mCoverView));
         setMenuListener();
         setSeekBarListener();
         setCenterClickListener();
@@ -281,6 +276,20 @@ public class newReadBookActivity extends BaseActivity {
     }
 
     protected void setOnTextSelectListener() {
+        mTxtReaderView.setOnPageEdgeListener(new IPageEdgeListener() {
+            @Override
+            public void onCurrentFirstPage() {
+
+
+            }
+
+            @Override
+            public void onCurrentLastPage() {
+
+            }
+        });
+
+
         mTxtReaderView.setOnTextSelectListener(new ITextSelectListener() {
             @Override
             public void onTextChanging(TxtChar firstSelectedChar, TxtChar lastSelectedChar) {
@@ -324,19 +333,11 @@ public class newReadBookActivity extends BaseActivity {
     }
 
     protected void setPageChangeListener() {
-        mTxtReaderView.setPageChangeListener(new IPageChangeListener() {
-            @Override
-            public void onCurrentPage(float progress) {
-                int p = (int) (progress * 1000);
-                mProgressText.setText(((float) p / 10) + "%");
-                mMenuHolder.mSeekBar.setProgress((int) (progress * 100));
-                IChapter currentChapter = mTxtReaderView.getCurrentChapter();
-                if (currentChapter != null) {
-                    mChapterNameText.setText((currentChapter.getTitle() + "").trim());
-                } else {
-                    mChapterNameText.setText("无章节");
-                }
-            }
+        mTxtReaderView.setPageChangeListener(progress -> {
+            int p = (int) (progress * 1000);
+            mProgressText.setText(((float) p / 10) + "%");
+            mMenuHolder.mSeekBar.setProgress((int) (progress * 100));
+
         });
     }
 
@@ -379,28 +380,28 @@ public class newReadBookActivity extends BaseActivity {
                 return true;
             }
         });
-        mChapterMenuText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mChapterListPop != null) {
-                    if (!mChapterListPop.isShowing()) {
-                        mChapterListPop.showAsDropDown(mTopDecoration);
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                IChapter currentChapter = mTxtReaderView.getCurrentChapter();
-                                if (currentChapter != null) {
-                                    mChapterListPop.setCurrentIndex(currentChapter.getIndex());
-                                    mChapterListPop.notifyDataSetChanged();
-                                }
-                            }
-                        }, 300);
-                    } else {
-                        mChapterListPop.dismiss();
-                    }
-                }
-            }
-        });
+//        mChapterMenuText.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (mChapterListPop != null) {
+//                    if (!mChapterListPop.isShowing()) {
+//                        mChapterListPop.showAsDropDown(mTopDecoration);
+//                        mHandler.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                IChapter currentChapter = mTxtReaderView.getCurrentChapter();
+//                                if (currentChapter != null) {
+//                                    mChapterListPop.setCurrentIndex(currentChapter.getIndex());
+//                                    mChapterListPop.notifyDataSetChanged();
+//                                }
+//                            }
+//                        }, 300);
+//                    } else {
+//                        mChapterListPop.dismiss();
+//                    }
+//                }
+//            }
+//        });
         mTopMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -9,7 +9,7 @@
     android:orientation="vertical">
 
 
-    <ScrollView
+    <com.example.liuwen.two.View.MyScrollView
         android:id="@+id/preview_scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,21 +30,11 @@
                 android:paddingLeft="25dp"
                 android:paddingRight="25dp"
                 android:paddingTop="15dp"
-                android:text="        加载中..."
                 android:textColor="@color/text_color_33"
                 android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/preview_tv_next"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingBottom="20dp"
-                android:text="下一章"
-                android:textColor="@color/text_color_33"
-                android:textSize="18sp" />
         </LinearLayout>
-    </ScrollView>
+    </com.example.liuwen.two.View.MyScrollView>
 
 
 

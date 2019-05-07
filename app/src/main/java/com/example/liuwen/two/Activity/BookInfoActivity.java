@@ -148,7 +148,7 @@ public class BookInfoActivity extends BaseActivity {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("book", mCurrentBook);
                 bundle.putInt("position", position);
-                openActivity(newReadBookActivity.class, bundle);
+                openActivity(ReadBookActivity.class, bundle);
             }
         });
 
@@ -168,7 +168,7 @@ public class BookInfoActivity extends BaseActivity {
             Bundle bundle = new Bundle();
             bundle.putSerializable("book", mCurrentBook);
             bundle.putInt("position", 0);//从第一章开始阅读
-            openActivity(newReadBookActivity.class, bundle);
+            openActivity(ReadBookActivity.class, bundle);
 
         });
     }

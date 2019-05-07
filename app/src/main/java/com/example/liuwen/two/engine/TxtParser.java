@@ -24,12 +24,14 @@ public class TxtParser implements ParseStrategy {
         sb.append("\n");
         for (String line : chapter.getContents()) {
             //4个空格+正文+换行
-            sb.append("        ");
+//            sb.append("        ");
             sb.append(line);
             sb.append("\n");
         }
         //章节结束空一行，用来分割下一章节
 //        sb.append("\n");
+        sb.append("本章完");
+        sb.append("\n");
         return sb.toString();
     }
 

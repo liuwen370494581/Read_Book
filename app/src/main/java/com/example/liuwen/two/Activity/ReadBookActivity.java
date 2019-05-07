@@ -18,6 +18,7 @@ import com.example.liuwen.two.Bean.Chapter;
 import com.example.liuwen.two.R;
 import com.example.liuwen.two.Rx.Disposable;
 import com.example.liuwen.two.Rx.Subscriber;
+import com.example.liuwen.two.View.MyScrollView;
 import com.example.liuwen.two.engine.EasyBook;
 import com.example.liuwen.two.engine.TxtParser;
 import com.example.liuwen.two.utils.NetUtil;
@@ -41,13 +42,14 @@ public class ReadBookActivity extends BaseActivity {
     private String loading = "加载中";
     private Book mCurrentBook;
     private int position = 0;
-    private TextView mTvContent, mTvNextChapter, mTvControlPreviousChapter, mTvControlNextChapter;
+    private TextView mTvContent, mTvControlPreviousChapter, mTvControlNextChapter;
     private FrameLayout mFrameLayoutControl;
     private boolean isShowControl = true;
     private TextView mTvTryAgain, mTvChapterTitle;
     private ImageView imgBack;
     private Disposable mDisposable;
     private TxtParser mTxtParser = new TxtParser();//解析
+    private MyScrollView myScrollView;
 
     @Override
     protected int setLayoutRes() {
@@ -61,13 +63,14 @@ public class ReadBookActivity extends BaseActivity {
     @Override
     protected void initView() {
         mTvContent = getView(R.id.preview_tv);
-        mTvNextChapter = getView(R.id.preview_tv_next);
         mFrameLayoutControl = getView(R.id.preview_controlLayout);
         mTvControlPreviousChapter = getView(R.id.preview_previous);
         mTvControlNextChapter = getView(R.id.preview_next);
         mTvTryAgain = getView(R.id.tv_try_again);
         imgBack = getView(R.id.preview_back);
         mTvChapterTitle = getView(R.id.preview_title);
+        myScrollView = getView(R.id.preview_scrollView);
+
     }
 
     private void loadCatalog() {
@@ -105,7 +108,7 @@ public class ReadBookActivity extends BaseActivity {
      * 加载下一章
      */
     private void toNextChapter() {
-        int p = position;
+        int p = position + 1;
         if (p >= 0) {
             position = p;
             mTvContent.setText(loading);
@@ -120,7 +123,7 @@ public class ReadBookActivity extends BaseActivity {
      * 加载上一章
      */
     private void toPreviousChapter() {
-        int p = position + 1;
+        int p = position - 1;
         if (p < catalogs.size()) {
             position = p;
             mTvContent.setText(loading);
@@ -147,6 +150,18 @@ public class ReadBookActivity extends BaseActivity {
 
     @Override
     protected void setListener() {
+        myScrollView.setOnScrollChangeListener(new MyScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollToStart() {
+                    // toPreviousChapter();
+            }
+
+            @Override
+            public void onScrollToEnd() {
+                toNextChapter();
+
+            }
+        });
         mTvContent.setOnClickListener(v -> {
             if (isShowControl) {
                 mFrameLayoutControl.setVisibility(View.VISIBLE);
@@ -155,8 +170,6 @@ public class ReadBookActivity extends BaseActivity {
             }
             isShowControl = !isShowControl;
         });
-
-        mTvNextChapter.setOnClickListener(v -> toNextChapter());
 
         mTvControlNextChapter.setOnClickListener(v -> toNextChapter());
 
@@ -176,4 +189,5 @@ public class ReadBookActivity extends BaseActivity {
         super.onDestroy();
         mDisposable.dispose();
     }
+
 }
