@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.example.liuwen.two.Action.BookAction;
 import com.example.liuwen.two.Action.CatalogsHolder;
 import com.example.liuwen.two.Action.MyReadHandler;
@@ -169,7 +170,6 @@ public class BookInfoActivity extends BaseActivity {
             bundle.putSerializable("book", mCurrentBook);
             bundle.putInt("position", 0);//从第一章开始阅读
             openActivity(ReadBookActivity.class, bundle);
-
         });
     }
 

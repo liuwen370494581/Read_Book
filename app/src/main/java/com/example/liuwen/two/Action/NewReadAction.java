@@ -9,8 +9,6 @@ import android.graphics.Color;
  * desc   :
  */
 public class NewReadAction {
-
-
     public static final int[] StyleTextColors = new int[]{
             Color.parseColor("#4a453a"),
             Color.parseColor("#505550"),

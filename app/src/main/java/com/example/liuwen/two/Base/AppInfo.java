@@ -1,6 +1,7 @@
 package com.example.liuwen.two.Base;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.example.liuwen.two.Bean.Book;
 import com.example.liuwen.two.utils.ThreadPoolUtils;
@@ -19,12 +20,19 @@ import GreenDao3.DaoManager;
 public class AppInfo extends Application {
 
     private Book selectedBook = null;
+    private static Context sInstance;
+
+
+    public static Context getContext(){
+        return sInstance;
+    }
 
 
     @Override
     public void onCreate() {
         super.onCreate();
         //初始化greenDao3
+        sInstance = this;
         DaoManager.init(this);
         ThreadPoolUtils.init();
     }

@@ -10,7 +10,7 @@ import org.greenrobot.greendao.annotation.Generated;
  * author : liuwen
  * e-mail : liuwen370494581@163.com
  * time   : 2018/11/08 11:36
- * desc   :
+ * desc   : 章节目录
  */
 @Entity
 public class Catalog implements Serializable {

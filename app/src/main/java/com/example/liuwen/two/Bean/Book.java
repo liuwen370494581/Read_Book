@@ -15,7 +15,7 @@ import org.greenrobot.greendao.annotation.Generated;
  * author : liuwen
  * e-mail : liuwen370494581@163.com
  * time   : 2018/11/08 11:33
- * desc   :
+ * desc   : 当前书籍
  */
 @Entity
 public class Book implements Serializable {
