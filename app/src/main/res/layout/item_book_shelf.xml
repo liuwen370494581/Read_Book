@@ -14,7 +14,7 @@
         <com.example.liuwen.two.View.CornerImageView
             android:layout_centerHorizontal="true"
             android:id="@+id/iv_book_cover"
-            android:layout_width="78dp"
+            android:layout_width="88dp"
             android:layout_height="106dp"
             android:scaleType="centerCrop"
             android:src="@mipmap/ic_default_cover"

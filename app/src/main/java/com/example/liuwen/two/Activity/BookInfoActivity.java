@@ -153,15 +153,15 @@ public class BookInfoActivity extends BaseActivity {
             }
         });
 
-//        //添加到书架
-//        btnAddBook.setOnClickListener(v -> {
-//            BookDaoHolder.insert(new Book(BookDaoHolder.getCount(), mCurrentBook.getBookName(),
-//                    mCurrentBook.getAuthor(), mCurrentBook.getUrl(), mCurrentBook.getChapterSize(),
-//                    mCurrentBook.getLastUpdateTime(), mCurrentBook.getLastChapterName(),
-//                    mCurrentBook.getSource(), DateTimeUtils.getCurrentTimeExactToSecond()));
-//            btnAddBook.setText("已添加");
-//            EventBusUtil.sendEvent(new Event(C.EventCode.AddBookShelf));
-//        });
+        //添加到书架
+        btnAddBook.setOnClickListener(v -> {
+            BookDaoHolder.insert(new Book(BookDaoHolder.getCount(), mCurrentBook.getBookName(),
+                    mCurrentBook.getAuthor(), mCurrentBook.getUrl(), mCurrentBook.getImageUrl(), mCurrentBook.getChapterSize(),
+                    mCurrentBook.getLastUpdateTime(), mCurrentBook.getLastChapterName(),
+                    mCurrentBook.getSiteName(), DateTimeUtils.getCurrentTimeExactToSecond()));
+            btnAddBook.setText("已添加");
+            EventBusUtil.sendEvent(new Event(C.EventCode.AddBookShelf));
+        });
 
         //开始阅读
         btnBookRead.setOnClickListener(v -> {

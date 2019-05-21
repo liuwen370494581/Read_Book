@@ -19,6 +19,7 @@ import com.example.liuwen.two.EventBus.BindEventBus;
 import com.example.liuwen.two.EventBus.C;
 import com.example.liuwen.two.EventBus.Event;
 import com.example.liuwen.two.R;
+import com.example.liuwen.two.utils.GridSpacingItemDecoration;
 import com.liaoinstan.springview.container.DefaultFooter;
 import com.liaoinstan.springview.container.DefaultHeader;
 import com.liaoinstan.springview.widget.SpringView;
@@ -71,16 +72,7 @@ public class BookFragment extends BaseFragment {
             mAdapter.setData(mBookList);
         }
 
-        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                GridLayoutManager.LayoutParams layoutParams = (GridLayoutManager.LayoutParams) view.getLayoutParams();
-                int spanSize = layoutParams.getSpanSize();
-                int spanIndex = layoutParams.getSpanIndex();
-                outRect.top = 20;
-
-            }
-        });
+        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(3, 20, true));
         mRecyclerView.setAdapter(mAdapter);
         setListener();
 
@@ -93,6 +85,7 @@ public class BookFragment extends BaseFragment {
         mSpringView.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
+
 
             }
 

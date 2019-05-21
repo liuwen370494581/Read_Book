@@ -32,7 +32,7 @@
                 android:paddingBottom="15dp"
                 android:text="        加载中..."
                 android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/preview_tv_next"
@@ -42,7 +42,7 @@
                 android:paddingBottom="20dp"
                 android:text="下一章"
                 android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textSize="17sp" />
         </LinearLayout>
     </com.example.liuwen.two.View.MyScrollView>
 

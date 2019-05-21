@@ -65,7 +65,7 @@ public class Book implements Serializable {
 
     @Generated(hash = 1368846132)
     public Book(Long id, String bookName, String author, String url, String imageUrl, String chapterSize, String lastUpdateTime, String lastChapterName,
-            String siteName, String addBookTime) {
+                String siteName, String addBookTime) {
         this.id = id;
         this.bookName = bookName;
         this.author = author;
@@ -77,7 +77,6 @@ public class Book implements Serializable {
         this.siteName = siteName;
         this.addBookTime = addBookTime;
     }
-
 
 
     public String getImageUrl() {

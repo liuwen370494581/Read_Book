@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.example.liuwen.two.Bean.Book;
 import com.example.liuwen.two.R;
+import com.example.liuwen.two.utils.GlideUtils;
 
 import cn.bingoogolapple.androidcommon.adapter.BGARecyclerViewAdapter;
 import cn.bingoogolapple.androidcommon.adapter.BGAViewHolderHelper;
@@ -21,6 +22,8 @@ public class BookShelfAdapter extends BGARecyclerViewAdapter<Book> {
 
     @Override
     protected void fillData(BGAViewHolderHelper helper, int position, Book model) {
+        GlideUtils.loadImage(helper.getImageView(R.id.iv_book_cover), model.getImageUrl(),
+                R.mipmap.ic_default_cover, R.mipmap.ic_default_cover);
         helper.setText(R.id.txt_book_name, model.getBookName());
     }
 }
