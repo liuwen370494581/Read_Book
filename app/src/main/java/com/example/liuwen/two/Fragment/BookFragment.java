@@ -37,7 +37,7 @@ import cn.bingoogolapple.androidcommon.adapter.BGAOnRVItemClickListener;
  * author : liuwen
  * e-mail : liuwen370494581@163.com
  * time   : 2018/11/12 15:20
- * desc   :
+ * desc   : 书架
  */
 @BindEventBus
 public class BookFragment extends BaseFragment {
@@ -67,31 +67,37 @@ public class BookFragment extends BaseFragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getFragmentContext(), 3);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mAdapter = new BookShelfAdapter(mRecyclerView);
+        getBookShelfDate();
+        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(3, 20, true));
+        mRecyclerView.setAdapter(mAdapter);
+        setListener();
+    }
+
+    /**
+     * 获取书架的数据
+     */
+    private void getBookShelfDate() {
         mBookList = BookDaoHolder.query();
         if (mBookList.size() > 0) {
             mAdapter.setData(mBookList);
         }
-
-        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(3, 20, true));
-        mRecyclerView.setAdapter(mAdapter);
-        setListener();
-
     }
 
     private void setListener() {
         mSpringView.setFooter(new DefaultFooter(getFragmentContext()));
         mSpringView.setHeader(new DefaultHeader(getFragmentContext()));
-
+        mSpringView.setType(SpringView.Type.FOLLOW);
+        mSpringView.setEnableFooter(true);//禁用foot
         mSpringView.setListener(new SpringView.OnFreshListener() {
             @Override
             public void onRefresh() {
-
-
+                mSpringView.onFinishFreshAndLoad();
+                getBookShelfDate();
             }
 
             @Override
             public void onLoadmore() {
-
+                mSpringView.onFinishFreshAndLoad();
             }
         });
 
@@ -107,10 +113,7 @@ public class BookFragment extends BaseFragment {
     public void handleEvent(Event event) {
         switch (event.getCode()) {
             case C.EventCode.AddBookShelf:
-                mBookList = BookDaoHolder.query();
-                if (mBookList != null && mBookList.size() > 0) {
-                    mAdapter.setData(mBookList);
-                }
+                getBookShelfDate();
                 break;
         }
     }
